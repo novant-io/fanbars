@@ -191,7 +191,7 @@ internal class Parser
       }
 
       // pushback closing bar if we read into it
-      if (ch == '}') in.unread(ch)
+      if (ch == '}') in.unreadChar(ch)
 
       return Token(t, buf.toStr)
     }
@@ -202,7 +202,7 @@ internal class Parser
       if (ch == '{' && peek == '{')
       {
         // pushback closing bar if we read into it
-        in.unread(ch)
+        in.unreadChar(ch)
         break
       }
 
@@ -216,13 +216,13 @@ internal class Parser
   ** Read next char in stream.
   private Int? read()
   {
-    ch := in.read
+    ch := in.readChar
     if (ch == '\n') line++
     return ch
   }
 
   ** Peek next char in stream.
-  private Int? peek() { in.peek }
+  private Int? peek() { in.peekChar }
 
   ** Throw ParseErr
   private Err parseErr(Str msg)
