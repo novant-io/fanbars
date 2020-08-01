@@ -28,8 +28,9 @@ Variable substitution uses the `{{var}}` syntax:
 
 If blocks use the `{{#if name}}` syntax, where `name`
 
-TODO: define what "truthy" means
-
     {{#if isLoggedIn}}
       Hello {{name}}!
     {{/if}}
+
+A value is considered `false` if its `null` or `false`, everything else is
+`true`.
