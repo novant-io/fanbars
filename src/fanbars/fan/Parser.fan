@@ -17,6 +17,7 @@ internal enum class TokenType
   comment,
   keyword,
   identifier,
+  dot,
   raw,
   eos
 }
@@ -41,6 +42,7 @@ internal const class Token
   Bool isComment()    { type == TokenType.comment    }
   Bool isKeyword()    { type == TokenType.keyword    }
   Bool isIdentifier() { type == TokenType.identifier }
+  Bool isDot()        { type == TokenType.dot        }
   Bool isRaw()        { type == TokenType.raw        }
   Bool isEos()        { type == TokenType.eos        }
 
@@ -89,26 +91,23 @@ internal class Parser
           switch (token.type)
           {
             case TokenType.identifier:
-              def := VarDef { it.name=token.val }
+              def := parseVarDef(token)
               parent.children.add(def)
 
             case TokenType.keyword:
               switch (token.val)
               {
                 case "#if":
-                  token = nextToken(TokenType.identifier)
-                  var := VarDef { it.name=token.val }
+                  var := parseVarDef
                   def := IfDef { it.var=var }
                   parent.children.push(def)
                   stack.push(def)
 
                 case "#each":
-                  token = nextToken(TokenType.identifier)
-                  iter := VarDef { it.name=token.val }
+                  iter := parseVarDef(null, 1)
                   token = nextToken(TokenType.identifier)
                   if (token.val != "in") throw unexpectedToken(token)
-                  token = nextToken(TokenType.identifier)
-                  var := VarDef { it.name=token.val }
+                  var := parseVarDef
                   def := EachDef { it.iter=iter; it.var=var }
                   parent.children.push(def)
                   stack.push(def)
@@ -135,6 +134,20 @@ internal class Parser
     }
 
     return root
+  }
+
+  ** Parse a variable path.
+  private VarDef parseVarDef(Token? token := null, Int maxPath := Int.maxVal)
+  {
+    if (token == null) token = nextToken(TokenType.identifier)
+    path := [token.val]
+    while (peek == '.' && path.size < maxPath)
+    {
+      nextToken(TokenType.dot)
+      token = nextToken(TokenType.identifier)
+      path.add(token.val)
+    }
+    return VarDef { it.path=path }
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -186,34 +199,26 @@ internal class Parser
     // check if inside a bar statement
     if (tokInBar)
     {
-      TokenType? t
+      // eat leading space
+      while (ch.isSpace) ch = read
 
+      // check for dot sep
+      if (ch == '.') return Token(TokenType.dot, ".")
+
+      // keyword
       if (ch == '#' || ch == '/')
       {
-        // keyword
-        t = TokenType.keyword
         buf.addChar(ch)
-        ch = read
-        while (ch.isAlphaNum) { buf.addChar(ch); ch=read }
-      }
-      else
-      {
-        // identifier
-        t = TokenType.identifier
-        if (!ch.isAlpha) throw unexpectedChar(ch)
-        buf.addChar(ch)
-        ch = read
-        while (isValidIdentiferChar(ch))
-        {
-          buf.addChar(ch)
-          ch = read
-        }
+        if (peek?.isAlpha != true) throw unexpectedChar(peek)
+        while (peek?.isAlpha == true) buf.addChar(read)
+        return Token(TokenType.keyword, buf.toStr)
       }
 
-      // pushback closing bar if we read into it
-      if (ch == '}') in.unreadChar(ch)
-
-      return Token(t, buf.toStr)
+      // identifier
+      if (!ch.isAlpha) throw unexpectedChar(ch)
+      buf.addChar(ch)
+      while (isValidIdentiferChar(peek)) buf.addChar(read)
+      return Token(TokenType.identifier, buf.toStr)
     }
 
     // raw text
@@ -260,9 +265,11 @@ internal class Parser
   }
 
   ** Throw ParseErr
-  private Err unexpectedChar(Int ch)
+  private Err unexpectedChar(Int? ch)
   {
-    parseErr("Unexpected char '$ch.toChar'")
+    ch == null
+      ? parseErr("Unexpected end of stream")
+      : parseErr("Unexpected char: '$ch.toChar'")
   }
 
   ** Throw ParseErr

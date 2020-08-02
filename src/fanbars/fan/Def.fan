@@ -40,7 +40,7 @@ internal class IfDef : Def
   override Void dump(OutStream out, Int indent)
   {
     out.print(Str.spaces(indent))
-    out.printLine("#if '${var.name}'")
+    out.printLine("#if '${var.dumpPath}'")
     children.each |k| { k.dump(out, indent+2) }
     out.print(Str.spaces(indent)).printLine("/if")
   }
@@ -60,7 +60,7 @@ internal class EachDef : Def
   override Void dump(OutStream out, Int indent)
   {
     out.print(Str.spaces(indent))
-    out.printLine("#each '${iter.name}' in '${var.name}'")
+    out.printLine("#each '${iter.dumpPath}' in '${var.dumpPath}'")
     children.each |k| { k.dump(out, indent+2) }
     out.print(Str.spaces(indent)).printLine("/each")
   }
@@ -74,12 +74,14 @@ internal class VarDef : Def
 {
   new make(|This| f) { f(this) }
 
-  const Str name
+  const Str[] path
+
+  Str dumpPath() { path.join(".") }
 
   override Void dump(OutStream out, Int indent)
   {
     out.print(Str.spaces(indent))
-    out.printLine("var ${name.toCode}")
+    out.printLine("var '${dumpPath}'")
   }
 }
 

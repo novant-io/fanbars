@@ -55,51 +55,69 @@ class ParserTest : Test
   {
     d := p("{{foo}}")
     verifyEq(d.children.size, 1)
-    verifyVar(d.children.first, "foo")
+    verifyVar(d.children.first, ["foo"])
 
     d = p("{{foo123}}")
     verifyEq(d.children.size, 1)
-    verifyVar(d.children.first, "foo123")
+    verifyVar(d.children.first, ["foo123"])
 
     d = p("{{foo-bar}}")
     verifyEq(d.children.size, 1)
-    verifyVar(d.children.first, "foo-bar")
+    verifyVar(d.children.first, ["foo-bar"])
 
     d = p("{{foo_bar}}")
     verifyEq(d.children.size, 1)
-    verifyVar(d.children.first, "foo_bar")
-
-    d = p("{{foo}}{{bar}}")
-    verifyEq(d.children.size, 2)
-    verifyVar(d.children[0], "foo")
-    verifyVar(d.children[1], "bar")
-
-    d = p("ok {{foo}}")
-    verifyEq(d.children.size, 2)
-    verifyRaw(d.children[0], "ok ")
-    verifyVar(d.children[1], "foo")
-
-    d = p("ok {{foo}}, and {{bar}} how?")
-    verifyEq(d.children.size, 5)
-    verifyRaw(d.children[0], "ok ")
-    verifyVar(d.children[1], "foo")
-    verifyRaw(d.children[2], ", and ")
-    verifyVar(d.children[3], "bar")
-    verifyRaw(d.children[4], " how?")
-
-    d = p(" {{foo}} {{bar}} ")
-    verifyEq(d.children.size, 5)
-    verifyRaw(d.children[0], " ")
-    verifyVar(d.children[1], "foo")
-    verifyRaw(d.children[2], " ")
-    verifyVar(d.children[3], "bar")
-    verifyRaw(d.children[4], " ")
+    verifyVar(d.children.first, ["foo_bar"])
 
     verifyErr(ParseErr#) { p("{{123}}") }
     verifyErr(ParseErr#) { p("{{_}}") }
     verifyErr(ParseErr#) { p("{{-}}") }
     verifyErr(ParseErr#) { p("{{_foo}}") }
     verifyErr(ParseErr#) { p("{{-foo}}") }
+  }
+
+  Void testVarsMulti()
+  {
+    d := p("{{foo}}{{bar}}")
+    verifyEq(d.children.size, 2)
+    verifyVar(d.children[0], ["foo"])
+    verifyVar(d.children[1], ["bar"])
+
+    d = p("ok {{foo}}")
+    verifyEq(d.children.size, 2)
+    verifyRaw(d.children[0], "ok ")
+    verifyVar(d.children[1], ["foo"])
+
+    d = p("ok {{foo}}, and {{bar}} how?")
+    verifyEq(d.children.size, 5)
+    verifyRaw(d.children[0], "ok ")
+    verifyVar(d.children[1], ["foo"])
+    verifyRaw(d.children[2], ", and ")
+    verifyVar(d.children[3], ["bar"])
+    verifyRaw(d.children[4], " how?")
+
+    d = p(" {{foo}} {{bar}} ")
+    verifyEq(d.children.size, 5)
+    verifyRaw(d.children[0], " ")
+    verifyVar(d.children[1], ["foo"])
+    verifyRaw(d.children[2], " ")
+    verifyVar(d.children[3], ["bar"])
+    verifyRaw(d.children[4], " ")
+  }
+
+  Void testVarsPath()
+  {
+    d := p("{{a.b}}")
+    verifyEq(d.children.size, 1)
+    verifyVar(d.children.first, ["a","b"])
+
+    d = p("{{a.b.foo-bar.x5.zoo}}")
+    verifyEq(d.children.size, 1)
+    verifyVar(d.children.first, ["a","b","foo-bar","x5","zoo"])
+
+    verifyErr(ParseErr#) { p("{{.}}") }
+    verifyErr(ParseErr#) { p("{{.foo}}") }
+    verifyErr(ParseErr#) { p("{{foo..bar}}") }
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -110,7 +128,7 @@ class ParserTest : Test
   {
     d := p("{{#if foo}}hello{{/if}}")
     verifyEq(d.children.size, 1)
-    verifyIf(d.children[0], "foo")
+    verifyIf(d.children[0], ["foo"])
     verifyRaw(d.children[0].children[0], "hello")
 
     verifyErr(ParseErr#) { p("{{#if}}") }
@@ -130,13 +148,13 @@ class ParserTest : Test
 
     // root
     verifyEq(d.children.size, 1)
-    verifyIf(d.children.first, "foo")
+    verifyIf(d.children.first, ["foo"])
 
     // outer #if
     d = d.children.first
     verifyEq(d.children.size, 2)
     verifyRaw(d.children[0], "hello")
-    verifyIf(d.children[1], "bar")
+    verifyIf(d.children[1], ["bar"])
 
     // inner #if
     d = d.children[1]
@@ -179,15 +197,17 @@ class ParserTest : Test
     verifyEq(d->text,  text)
   }
 
-  private Void verifyVar(Def d, Str name)
+  private Void verifyVar(Def d, Str[] path)
   {
     verifyEq(d.typeof, VarDef#)
-    verifyEq(d->name,  name)
+    Str[] p := d->path
+    verifyEq(p.size, path.size)
+    p.size.times |i| { verifyEq(p[i], path[i]) }
   }
 
-  private Void verifyIf(Def d, Str name)
+  private Void verifyIf(Def d, Str[] path)
   {
     verifyEq(d.typeof, IfDef#)
-    verifyEq(d->var->name, name)
+    verifyVar(d->var, path)
   }
 }

@@ -18,12 +18,14 @@ internal const class Renderer
     switch (def.typeof)
     {
       case IfDef#:
-        v := map[def->var->name]
+        // TODO
+        v := map[def->var->path->first]
         if (isTruthy(v))
           def.children.each |kid| { render(kid, map, out) }
 
       case VarDef#:
-        v := map[def->name]
+        // TODO
+        v := map[def->path->first]
         out.print(v==null ? "" : v.toStr)
 
       case RawTextDef#:
