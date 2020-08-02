@@ -23,12 +23,16 @@ internal const class Renderer
           def.children.each |kid| { render(kid, map, out) }
 
       case EachDef#:
-        // TODO
-        List? v := resolveVar(def->var, map) as List
-        if (v == null) return
-        v.each {
+        List? vals:= resolveVar(def->var, map) as List
+        if (vals == null) return
+        iname := def->iter->path->first
+        orig  := map[iname]
+        vals.each |v|
+        {
+          map[iname] = v
           def.children.each |kid| { render(kid, map, out) }
         }
+        if (orig != null) map[iname] = orig
 
       case VarDef#:
         v := resolveVar(def, map)

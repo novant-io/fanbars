@@ -80,6 +80,14 @@ class RendererTest : Test
 
     m = r(s, ["items":[1,2,3]])
     verifyEq(m, "test,test,test,")
+
+    s = "{{#each v in items}}Item {{v}}, {{/each}}"
+    m = r(s, ["items":[1,2,3]])
+    verifyEq(m, "Item 1, Item 2, Item 3, ")
+
+    s = "{{v}}, {{#each v in items}}Item {{v}}, {{/each}}{{v}}"
+    m = r(s, ["v":"foo", "items":[1,2,3]])
+    verifyEq(m, "foo, Item 1, Item 2, Item 3, foo")
   }
 
 //////////////////////////////////////////////////////////////////////////
