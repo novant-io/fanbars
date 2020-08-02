@@ -12,7 +12,8 @@ by expanding tags in a template using values provided in a `Map`.
       {{#each item in cart}}
         <li>{{item.name}} ${{item.price}}</li>
       {{/each}}
-    {{/if}
+      </ul>
+    {{/if}}
 
 We call it "semi" logic-less because there are some basic control structures
 for `if/else` and `each` blocks.  Technically Mustache has these as well, but
