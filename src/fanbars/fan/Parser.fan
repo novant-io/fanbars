@@ -102,8 +102,19 @@ internal class Parser
                   parent.children.push(def)
                   stack.push(def)
 
-                case "/if":
-                  stack.pop
+                case "#each":
+                  token = nextToken(TokenType.identifier)
+                  iter := VarDef { it.name=token.val }
+                  token = nextToken(TokenType.identifier)
+                  if (token.val != "in") throw unexpectedToken(token)
+                  token = nextToken(TokenType.identifier)
+                  var := VarDef { it.name=token.val }
+                  def := EachDef { it.iter=iter; it.var=var }
+                  parent.children.push(def)
+                  stack.push(def)
+
+                case "/if":   stack.pop
+                case "/each": stack.pop
 
                 default: throw unexpectedToken(token)
               }

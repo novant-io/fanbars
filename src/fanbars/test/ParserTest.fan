@@ -127,6 +127,23 @@ class ParserTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Each
+//////////////////////////////////////////////////////////////////////////
+
+  Void testEachBasic()
+  {
+    d := p("{{#each v in items}}todo{{/each}}")
+    // verifyEq(d.children.size, 1)
+    // verifyIf(d.children[0], "foo")
+    // verifyRaw(d.children[0].children[0], "hello")
+
+    // verifyErr(ParseErr#) { p("{{#each}}") }
+    // verifyErr(ParseErr#) { p("{{#each v in}}") }
+    // verifyErr(ParseErr#) { p("{{#each v in foo}}") }
+    // verifyErr(ParseErr#) { p("{{#each v in foo}} hello") }
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Support
 //////////////////////////////////////////////////////////////////////////
 

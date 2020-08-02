@@ -47,6 +47,26 @@ internal class IfDef : Def
 }
 
 *************************************************************************
+** EachDef
+*************************************************************************
+
+internal class EachDef : Def
+{
+  new make(|This| f) { f(this) }
+
+  VarDef iter
+  VarDef var
+
+  override Void dump(OutStream out, Int indent)
+  {
+    out.print(Str.spaces(indent))
+    out.printLine("#each '${iter.name}' in '${var.name}'")
+    children.each |k| { k.dump(out, indent+2) }
+    out.print(Str.spaces(indent)).printLine("/each")
+  }
+}
+
+*************************************************************************
 ** VarDef
 *************************************************************************
 
