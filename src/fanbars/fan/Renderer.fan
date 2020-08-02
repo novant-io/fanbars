@@ -23,6 +23,14 @@ internal const class Renderer
         if (isTruthy(v))
           def.children.each |kid| { render(kid, map, out) }
 
+      case EachDef#:
+        // TODO
+        List? v := map[def->var->path->first] as List
+        if (v == null) return
+        v.each {
+          def.children.each |kid| { render(kid, map, out) }
+        }
+
       case VarDef#:
         // TODO
         v := map[def->path->first]

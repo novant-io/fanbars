@@ -62,6 +62,24 @@ class RendererTest : Test
 
     m = r(s, ["foo":false])
     verifyEq(m, "")
+
+    s = "{{#if foo}}Hi {{name}}!{{/if}}"
+    m = r(s, ["foo":true, "name":"Bob"])
+    verifyEq(m, "Hi Bob!")
+  }
+
+//////////////////////////////////////////////////////////////////////////
+// Each
+//////////////////////////////////////////////////////////////////////////
+
+  Void testEachBasic()
+  {
+    s := "{{#each v in items}}test,{{/each}}"
+    m := r(s, [:])
+    verifyEq(m, "")
+
+    m = r(s, ["items":[1,2,3]])
+    verifyEq(m, "test,test,test,")
   }
 
 //////////////////////////////////////////////////////////////////////////

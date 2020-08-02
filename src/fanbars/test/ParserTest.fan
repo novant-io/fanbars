@@ -168,15 +168,15 @@ class ParserTest : Test
 
   Void testEachBasic()
   {
-    d := p("{{#each v in items}}todo{{/each}}")
-    // verifyEq(d.children.size, 1)
-    // verifyIf(d.children[0], "foo")
-    // verifyRaw(d.children[0].children[0], "hello")
+    d := p("{{#each v in items}}test{{/each}}")
+    verifyEq(d.children.size, 1)
+    verifyEach(d.children[0], "v", ["items"])
+    verifyRaw(d.children[0].children[0], "test")
 
-    // verifyErr(ParseErr#) { p("{{#each}}") }
-    // verifyErr(ParseErr#) { p("{{#each v in}}") }
-    // verifyErr(ParseErr#) { p("{{#each v in foo}}") }
-    // verifyErr(ParseErr#) { p("{{#each v in foo}} hello") }
+    verifyErr(ParseErr#) { p("{{#each}}") }
+    verifyErr(ParseErr#) { p("{{#each v in}}") }
+    verifyErr(ParseErr#) { p("{{#each v in foo}}") }
+    verifyErr(ParseErr#) { p("{{#each v in foo}} hello") }
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -208,6 +208,13 @@ class ParserTest : Test
   private Void verifyIf(Def d, Str[] path)
   {
     verifyEq(d.typeof, IfDef#)
+    verifyVar(d->var, path)
+  }
+
+  private Void verifyEach(Def d, Str iter, Str[] path)
+  {
+    verifyEq(d.typeof, EachDef#)
+    verifyVar(d->iter, [iter])
     verifyVar(d->var, path)
   }
 }
