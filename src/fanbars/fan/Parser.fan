@@ -186,19 +186,28 @@ internal class Parser
     // check if inside a bar statement
     if (tokInBar)
     {
-      t := TokenType.identifier
+      TokenType? t
 
       if (ch == '#' || ch == '/')
       {
+        // keyword
         t = TokenType.keyword
         buf.addChar(ch)
         ch = read
+        while (ch.isAlphaNum) { buf.addChar(ch); ch=read }
       }
-
-      while (ch.isAlphaNum)
+      else
       {
+        // identifier
+        t = TokenType.identifier
+        if (!ch.isAlpha) throw unexpectedChar(ch)
         buf.addChar(ch)
         ch = read
+        while (isValidIdentiferChar(ch))
+        {
+          buf.addChar(ch)
+          ch = read
+        }
       }
 
       // pushback closing bar if we read into it
@@ -224,6 +233,15 @@ internal class Parser
     return Token(TokenType.raw, buf.toStr)
   }
 
+  ** Return 'true' if ch is a valid identifier char
+  private Bool isValidIdentiferChar(Int ch)
+  {
+    if (ch.isAlphaNum) return true
+    if (ch == '-') return true
+    if (ch == '_') return true
+    return false
+  }
+
   ** Read next char in stream.
   private Int? read()
   {
@@ -242,11 +260,17 @@ internal class Parser
   }
 
   ** Throw ParseErr
+  private Err unexpectedChar(Int ch)
+  {
+    parseErr("Unexpected char '$ch.toChar'")
+  }
+
+  ** Throw ParseErr
   private Err unexpectedToken(Token token)
   {
     token.isEos
-      ? ParseErr("Unexpected end of stream [${filename}:${line}]")
-      : ParseErr("Unexpected token: '$token.val' [${filename}:${line}]")
+      ? parseErr("Unexpected end of stream")
+      : parseErr("Unexpected token: '$token.val'")
   }
 
 //////////////////////////////////////////////////////////////////////////

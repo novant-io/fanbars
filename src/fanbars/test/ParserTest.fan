@@ -57,6 +57,18 @@ class ParserTest : Test
     verifyEq(d.children.size, 1)
     verifyVar(d.children.first, "foo")
 
+    d = p("{{foo123}}")
+    verifyEq(d.children.size, 1)
+    verifyVar(d.children.first, "foo123")
+
+    d = p("{{foo-bar}}")
+    verifyEq(d.children.size, 1)
+    verifyVar(d.children.first, "foo-bar")
+
+    d = p("{{foo_bar}}")
+    verifyEq(d.children.size, 1)
+    verifyVar(d.children.first, "foo_bar")
+
     d = p("{{foo}}{{bar}}")
     verifyEq(d.children.size, 2)
     verifyVar(d.children[0], "foo")
@@ -82,6 +94,12 @@ class ParserTest : Test
     verifyRaw(d.children[2], " ")
     verifyVar(d.children[3], "bar")
     verifyRaw(d.children[4], " ")
+
+    verifyErr(ParseErr#) { p("{{123}}") }
+    verifyErr(ParseErr#) { p("{{_}}") }
+    verifyErr(ParseErr#) { p("{{-}}") }
+    verifyErr(ParseErr#) { p("{{_foo}}") }
+    verifyErr(ParseErr#) { p("{{-foo}}") }
   }
 
 //////////////////////////////////////////////////////////////////////////
