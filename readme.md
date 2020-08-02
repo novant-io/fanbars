@@ -68,3 +68,18 @@ If blocks use the `{{#if var}}` syntax, where the value of `var` is considered
     output:
       Hello Bob!
 
+Each blocks use the `{{#each v in var}}` syntax, where the value of `v` is
+replace with each element in `var`:
+
+    template:
+      {{#each v in items}}
+        Item #{{v}}
+      {{/if}}
+
+    map:
+      ["items":[1,2,3]]
+
+    output:
+      Item #1
+      Item #2
+      Item #3
