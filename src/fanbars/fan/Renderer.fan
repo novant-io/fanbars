@@ -59,7 +59,13 @@ internal const class Renderer
   static Obj? resolveVar(VarDef def, Str:Obj map)
   {
     val := map[def.path.first]
-    // TODO: walk paths
+    def.path.eachRange(1..-1) |n|
+    {
+      if (val == null) return
+      s := val.typeof.slot(n)
+      if (s is Method) val = ((Method)s).call(val)
+      else val = ((Field)s).get(val)
+    }
     return val
   }
 }

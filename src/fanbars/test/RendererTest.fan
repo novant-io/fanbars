@@ -50,6 +50,20 @@ class RendererTest : Test
     verifyEq(m, "")
   }
 
+  Void testVarsPaths()
+  {
+    s := "0x{{foo.toHex}}"
+    m := r(s, ["foo":255])
+    verifyEq(m, "0xff")
+
+    s = "0x{{foo.first.toHex}}"
+    m = r(s, ["foo":[128]])
+    verifyEq(m, "0x80")
+
+    m = r(s, [:])
+    verifyEq(m, "0x")
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // If
 //////////////////////////////////////////////////////////////////////////
