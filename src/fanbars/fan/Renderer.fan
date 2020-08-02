@@ -18,22 +18,20 @@ internal const class Renderer
     switch (def.typeof)
     {
       case IfDef#:
-        // TODO
-        v := map[def->var->path->first]
+        v := resolveVar(def->var, map)
         if (isTruthy(v))
           def.children.each |kid| { render(kid, map, out) }
 
       case EachDef#:
         // TODO
-        List? v := map[def->var->path->first] as List
+        List? v := resolveVar(def->var, map) as List
         if (v == null) return
         v.each {
           def.children.each |kid| { render(kid, map, out) }
         }
 
       case VarDef#:
-        // TODO
-        v := map[def->path->first]
+        v := resolveVar(def, map)
         out.print(v==null ? "" : v.toStr)
 
       case RawTextDef#:
@@ -51,5 +49,13 @@ internal const class Renderer
     if (val == false) return false
     // TODO: what else?
     return true
+  }
+
+  ** Resolve a VarDef to a map value.
+  static Obj? resolveVar(VarDef def, Str:Obj map)
+  {
+    val := map[def.path.first]
+    // TODO: walk paths
+    return val
   }
 }
