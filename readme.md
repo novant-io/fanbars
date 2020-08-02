@@ -20,17 +20,46 @@ its a bit opaque (and confusing) how they get exposed.  So Fanbars goes ahead
 and makes them explicit.  This seemed like a good middle ground for what you
 need in real projects without adding any "real" logic to templates.
 
+## API
+
+Input can be a `Str` or `File` instance:
+
+    Fanbars.render("Hello {{name}}!", ["name":"Bob"], out)
+    Fanbars.render(file, ["name":"Bob"], out)
+
+Output can be streamed to an `OutStream` instance, or return a fully rendered
+`Str`:
+
+    // stream to out
+    Fanbars.render(template, map, out)
+
+    // return as Str
+    s := Fanbars.renderStr(template, map)
+
 ## Syntax
 
 Variable substitution uses the `{{var}}` syntax:
 
-    Hello {{name}}!
-
-If blocks use the `{{#if name}}` syntax, where `name`
-
-    {{#if isLoggedIn}}
+    template:
       Hello {{name}}!
-    {{/if}}
 
-A value is considered `false` if its `null` or `false`, everything else is
-`true`.
+    map:
+      ["name":"Bob"]
+
+    output:
+      Hello Bob!
+
+If blocks use the `{{#if var}}` syntax, where the value of `var` is considered
+`false` if its `null` or `false`, everything else is `true`:
+
+    template:
+      {{#if isLoggedIn}}
+        Hello {{name}}!
+      {{/if}}
+
+    map:
+      ["isLoggedIn":true, "name":"Bob"]
+
+    output:
+      Hello Bob!
+
