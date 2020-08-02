@@ -24,17 +24,21 @@ need in real projects without adding any "real" logic to templates.
 
 Input can be a `Str` or `File` instance:
 
-    Fanbars.render("Hello {{name}}!", ["name":"Bob"], out)
-    Fanbars.render(file, ["name":"Bob"], out)
+```fantom
+Fanbars.render("Hello {{name}}!", ["name":"Bob"], out)
+Fanbars.render(file, ["name":"Bob"], out)
+```
 
 Output can be streamed to an `OutStream` instance, or return a fully rendered
 `Str`:
 
-    // stream to out
-    Fanbars.render(template, map, out)
+```fantom
+// stream to out
+Fanbars.render(template, map, out)
 
-    // return as Str
-    s := Fanbars.renderStr(template, map)
+// return as Str
+s := Fanbars.renderStr(template, map)
+```
 
 ## Syntax
 
