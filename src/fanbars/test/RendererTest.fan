@@ -105,6 +105,57 @@ class RendererTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Newlines
+//////////////////////////////////////////////////////////////////////////
+
+  Void testNewlines()
+  {
+    // raw text
+    s := "Did
+          this
+          work?"
+    m := r(s, [:])
+    verifyEq(m, s)
+
+    // simple var
+    s = "Did
+         {{foo}}
+         work?"
+    m = r(s, ["foo":"that"])
+    verifyEq(m, "Did
+                 that
+                 work?")
+
+    // simple #if
+    s = "Did
+         {{#if foo}}what{{/if}}
+         work?"
+    m = r(s, ["foo":true])
+    verifyEq(m, "Did
+                 what
+                 work?")
+
+    // simple #if no-op
+    s = "Did
+         {{#if foo}}what{{/if}}
+         work?"
+    m = r(s, ["foo":false])
+    verifyEq(m, "Did
+                 work?")
+
+    // // #if and eat blank lines
+    // s = "Did
+    //      {{#if foo}}
+    //      who
+    //      {{/if}}
+    //      work?"
+    // m = r(s, ["foo":true])
+    // verifyEq(m, "Did
+    //              who
+    //              work?")
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // File
 //////////////////////////////////////////////////////////////////////////
 
@@ -123,6 +174,7 @@ class RendererTest : Test
 
   private Str r(Str template, Str:Obj map)
   {
-    Fanbars.renderStr(template, map)
+Parser(template.in).parse.dump(Env.cur.out, 0)
+    return Fanbars.renderStr(template, map)
   }
 }
