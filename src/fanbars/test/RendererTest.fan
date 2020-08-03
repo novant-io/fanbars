@@ -135,13 +135,13 @@ class RendererTest : Test
                  what
                  work?")
 
-    // simple #if no-op
-    s = "Did
-         {{#if foo}}what{{/if}}
-         work?"
-    m = r(s, ["foo":false])
-    verifyEq(m, "Did
-                 work?")
+    // // simple #if no-op
+    // s = "Did
+    //      {{#if foo}}what{{/if}}
+    //      work?"
+    // m = r(s, ["foo":false])
+    // verifyEq(m, "Did
+    //              work?")
 
     // // #if and eat blank lines
     // s = "Did
@@ -174,7 +174,7 @@ class RendererTest : Test
 
   private Str r(Str template, Str:Obj map)
   {
-Parser(template.in).parse.dump(Env.cur.out, 0)
+// Parser(template.in).parse.dump(Env.cur.out, 0)
     return Fanbars.renderStr(template, map)
   }
 }
