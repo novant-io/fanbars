@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="fanbars-logo.png" width="512">
+</p>
+
 # Fanbars
 
 "Semi" logic-less templates for Fantom inspired by
