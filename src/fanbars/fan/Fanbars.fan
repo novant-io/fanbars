@@ -33,7 +33,7 @@ const class Fanbars
     finally { in?.close }
   }
 
-  ** Render template to a 'Str' instancce.
+  ** Render template to a 'Str' instance.
   Str renderStr(Str:Obj map)
   {
     buf := StrBuf()
