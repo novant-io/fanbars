@@ -32,24 +32,29 @@ Install into your current Fantom repo using `fanr` -- full API docs over on
 
     $ fanr install fanbars
 
-## API
+## Usage
 
-Input can be a `Str` or `File` instance:
+Render text by compiling your template then renderering:
 
 ```fantom
-Fanbars.render("Hello {{name}}!", ["name":"Bob"], out)
-Fanbars.render(file, ["name":"Bob"], out)
+Fanbars.compile(template).render(out, map)
+```
+
+The input template can be an `InStream`, `Str` or `File` instance:
+
+```fantom
+Fanbars.compile(in)
+Fanbars.compile(file)
+Fanbars.compile("Hello {{name}}!")
 ```
 
 Output can be streamed to an `OutStream` instance, or return a fully rendered
 `Str`:
 
 ```fantom
-// stream to out
-Fanbars.render(template, map, out)
-
-// return as Str
-s := Fanbars.renderStr(template, map)
+f := Fanbars.compile(template)
+s := f.renderStr(map)  // return as Str
+f.render(out, map)     // stream to out
 ```
 
 ## Syntax
@@ -93,7 +98,7 @@ If blocks use the `{{#if var}}` syntax, where the value of `var` is considered
       Hello Bob!
 
 Each blocks use the `{{#each v in var}}` syntax, where the value of `v` is
-replace with each element in `var`:
+replaced with each element in `var`:
 
     template:
       {{#each v in items}}

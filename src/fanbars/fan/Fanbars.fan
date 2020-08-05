@@ -37,12 +37,12 @@ const class Fanbars
   Str renderStr(Str:Obj map)
   {
     buf := StrBuf()
-    render(map, buf.out)
+    render(buf.out, map)
     return buf.toStr
   }
 
   ** Render template to given OutStream.
-  Void render(Str:Obj map, OutStream out)
+  Void render(OutStream out, Str:Obj map)
   {
     def := (defRef.val as Unsafe).val
     Renderer.render(def, map, out)
