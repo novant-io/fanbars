@@ -58,6 +58,19 @@ Variable substitution uses the `{{var}}` syntax:
     output:
       Hello Bob!
 
+By default all variable text is HTML escaped using
+[`OutStream.writeXml`](https://fantom.org/doc/sys/OutStream#writeXml).  To
+replace text unescaped use the "triple-stash" `{{{`:
+
+    template:
+      This is {{foo}} and this is {{{foo}}}
+
+    map:
+      ["foo":"A&W"]
+
+    output:
+      This is A&amp;W and this is A&W
+
 If blocks use the `{{#if var}}` syntax, where the value of `var` is considered
 `false` if its `null` or `false`, everything else is `true`:
 

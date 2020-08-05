@@ -120,6 +120,17 @@ class ParserTest : Test
     verifyErr(ParseErr#) { p("{{foo..bar}}") }
   }
 
+  Void testVarsEscape()
+  {
+    d := p("{{{foo}}}")
+    verifyEq(d.children.size, 1)
+    verifyVar(d.children.first, ["foo"], false)
+
+    d = p("{{{a.b.c}}}")
+    verifyEq(d.children.size, 1)
+    verifyVar(d.children.first, ["a","b","c"], false)
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // If
 //////////////////////////////////////////////////////////////////////////
@@ -197,9 +208,10 @@ class ParserTest : Test
     verifyEq(d->text,  text)
   }
 
-  private Void verifyVar(Def d, Str[] path)
+  private Void verifyVar(Def d, Str[] path, Bool escape := true)
   {
     verifyEq(d.typeof, VarDef#)
+    verifyEq(d->escape, escape)
     Str[] p := d->path
     verifyEq(p.size, path.size)
     p.size.times |i| { verifyEq(p[i], path[i]) }

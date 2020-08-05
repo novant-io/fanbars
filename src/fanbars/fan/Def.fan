@@ -75,6 +75,7 @@ internal class VarDef : Def
   new make(|This| f) { f(this) }
 
   const Str[] path
+  const Bool escape := true
 
   Str dumpPath() { path.join(".") }
 

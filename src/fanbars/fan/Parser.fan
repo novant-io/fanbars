@@ -14,6 +14,8 @@ internal enum class TokenType
 {
   openBar,
   closeBar,
+  openTriBar,
+  closeTriBar,
   comment,
   keyword,
   identifier,
@@ -37,14 +39,16 @@ internal const class Token
   ** Token literval val.
   const Str val
 
-  Bool isOpenBar()    { type == TokenType.openBar    }
-  Bool isCloseBar()   { type == TokenType.closeBar   }
-  Bool isComment()    { type == TokenType.comment    }
-  Bool isKeyword()    { type == TokenType.keyword    }
-  Bool isIdentifier() { type == TokenType.identifier }
-  Bool isDot()        { type == TokenType.dot        }
-  Bool isRaw()        { type == TokenType.raw        }
-  Bool isEos()        { type == TokenType.eos        }
+  Bool isOpenBar()     { type == TokenType.openBar     }
+  Bool isCloseBar()    { type == TokenType.closeBar    }
+  Bool isOpenTriBar()  { type == TokenType.openTriBar  }
+  Bool isCloseTriBar() { type == TokenType.closeTriBar }
+  Bool isComment()     { type == TokenType.comment     }
+  Bool isKeyword()     { type == TokenType.keyword     }
+  Bool isIdentifier()  { type == TokenType.identifier  }
+  Bool isDot()         { type == TokenType.dot         }
+  Bool isRaw()         { type == TokenType.raw         }
+  Bool isEos()         { type == TokenType.eos         }
 
   override Str toStr() { "${type}='${val}'" }
 }
@@ -85,6 +89,11 @@ internal class Parser
         case TokenType.raw:
           def := RawTextDef { it.text=token.val }
           parent.children.add(def)
+
+        case TokenType.openTriBar:
+          def := parseVarDef(null, Int.maxVal, false)
+          parent.children.add(def)
+          nextToken(TokenType.closeTriBar) // eat closing }}}
 
         case TokenType.openBar:
           token = nextToken
@@ -137,7 +146,7 @@ internal class Parser
   }
 
   ** Parse a variable path.
-  private VarDef parseVarDef(Token? token := null, Int maxPath := Int.maxVal)
+  private VarDef parseVarDef(Token? token := null, Int maxPath := Int.maxVal, Bool escape := true)
   {
     if (token == null) token = nextToken(TokenType.identifier)
     path := [token.val]
@@ -147,7 +156,7 @@ internal class Parser
       token = nextToken(TokenType.identifier)
       path.add(token.val)
     }
-    return VarDef { it.path=path }
+    return VarDef { it.escape=escape; it.path=path }
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -185,6 +194,11 @@ internal class Parser
     {
       read // eat second }
       tokInBar = true
+      if (peek == '{')
+      {
+        read // eat third }
+        return Token(TokenType.openTriBar, "{{{")
+      }
       return Token(TokenType.openBar, "{{")
     }
 
@@ -193,6 +207,11 @@ internal class Parser
     {
       read // eat second }
       tokInBar = false
+      if (peek == '}')
+      {
+        read // eat third }
+        return Token(TokenType.closeTriBar, "}}}")
+      }
       return Token(TokenType.closeBar, "}}")
     }
 

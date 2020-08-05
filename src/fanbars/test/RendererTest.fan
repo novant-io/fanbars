@@ -69,6 +69,10 @@ class RendererTest : Test
     s := "{{foo}}"
     m := r(s, ["foo":"< test & \""])
     verifyEq(m, "&lt; test &amp; &quot;")
+
+    s = "{{{foo}}}"
+    m = r(s, ["foo":"< test & \""])
+    verifyEq(m, "< test & \"")
   }
 
 //////////////////////////////////////////////////////////////////////////
