@@ -12,10 +12,10 @@
 
 internal enum class TokenType
 {
-  openBar,
-  closeBar,
-  openTriBar,
-  closeTriBar,
+  openStash,
+  closeStash,
+  openTriStash,
+  closeTriStash,
   comment,
   keyword,
   identifier,
@@ -39,16 +39,16 @@ internal const class Token
   ** Token literval val.
   const Str val
 
-  Bool isOpenBar()     { type == TokenType.openBar     }
-  Bool isCloseBar()    { type == TokenType.closeBar    }
-  Bool isOpenTriBar()  { type == TokenType.openTriBar  }
-  Bool isCloseTriBar() { type == TokenType.closeTriBar }
-  Bool isComment()     { type == TokenType.comment     }
-  Bool isKeyword()     { type == TokenType.keyword     }
-  Bool isIdentifier()  { type == TokenType.identifier  }
-  Bool isDot()         { type == TokenType.dot         }
-  Bool isRaw()         { type == TokenType.raw         }
-  Bool isEos()         { type == TokenType.eos         }
+  Bool isOpenStash()     { type == TokenType.openStash     }
+  Bool isCloseStash()    { type == TokenType.closeStash    }
+  Bool isOpenTriStash()  { type == TokenType.openTriStash  }
+  Bool isCloseTriStash() { type == TokenType.closeTriStash }
+  Bool isComment()       { type == TokenType.comment       }
+  Bool isKeyword()       { type == TokenType.keyword       }
+  Bool isIdentifier()    { type == TokenType.identifier    }
+  Bool isDot()           { type == TokenType.dot           }
+  Bool isRaw()           { type == TokenType.raw           }
+  Bool isEos()           { type == TokenType.eos           }
 
   override Str toStr() { "${type}='${val}'" }
 }
@@ -90,12 +90,12 @@ internal class Parser
           def := RawTextDef { it.text=token.val }
           parent.children.add(def)
 
-        case TokenType.openTriBar:
+        case TokenType.openTriStash:
           def := parseVarDef(null, Int.maxVal, false)
           parent.children.add(def)
-          nextToken(TokenType.closeTriBar) // eat closing }}}
+          nextToken(TokenType.closeTriStash) // eat closing }}}
 
-        case TokenType.openBar:
+        case TokenType.openStash:
           token = nextToken
           switch (token.type)
           {
@@ -130,7 +130,7 @@ internal class Parser
             default: throw unexpectedToken(token)
           }
           // eat closing }}
-          nextToken(TokenType.closeBar)
+          nextToken(TokenType.closeStash)
 
         default: throw unexpectedToken(token)
       }
@@ -193,30 +193,30 @@ internal class Parser
     if (ch == '{' && peek == '{')
     {
       read // eat second }
-      tokInBar = true
+      tokInStash = true
       if (peek == '{')
       {
         read // eat third }
-        return Token(TokenType.openTriBar, "{{{")
+        return Token(TokenType.openTriStash, "{{{")
       }
-      return Token(TokenType.openBar, "{{")
+      return Token(TokenType.openStash, "{{")
     }
 
     // close }}
     if (ch == '}' && peek == '}')
     {
       read // eat second }
-      tokInBar = false
+      tokInStash = false
       if (peek == '}')
       {
         read // eat third }
-        return Token(TokenType.closeTriBar, "}}}")
+        return Token(TokenType.closeTriStash, "}}}")
       }
-      return Token(TokenType.closeBar, "}}")
+      return Token(TokenType.closeStash, "}}")
     }
 
-    // check if inside a bar statement
-    if (tokInBar)
+    // check if inside a stash statement
+    if (tokInStash)
     {
       // eat leading space
       while (ch.isSpace) ch = read
@@ -245,7 +245,7 @@ internal class Parser
     {
       if (ch == '{' && peek == '{')
       {
-        // pushback closing bar if we read into it
+        // pushback closing stash if we read into it
         in.unreadChar(ch)
         break
       }
@@ -303,11 +303,11 @@ internal class Parser
 // Fields
 //////////////////////////////////////////////////////////////////////////
 
-  private const Str podName        // podName
-  private const Str filename       // name of file to parse
-  private InStream in              // input
-  private Int line := 1            // current line
-  private Def[] stack := [,]       // AST node stack
-  private Bool tokInBar := false   // are we tokenizing inside {{ ... }}
-  private StrBuf buf := StrBuf()   // resuse buf in nextToken
+  private const Str podName         // podName
+  private const Str filename        // name of file to parse
+  private InStream in               // input
+  private Int line := 1             // current line
+  private Def[] stack := [,]        // AST node stack
+  private Bool tokInStash := false  // are we tokenizing inside {{ ... }}
+  private StrBuf buf := StrBuf()    // resuse buf in nextToken
 }
