@@ -175,7 +175,7 @@ class RendererTest : Test
     file := tempDir + `test.fb`
     file.out.print("Hello, {{name}}!").sync.close
 
-    m := Fanbars.renderStr(file, ["name":"Bob"])
+    m := Fanbars.compile(file).renderStr(["name":"Bob"])
     verifyEq(m, "Hello, Bob!")
   }
 
@@ -186,6 +186,6 @@ class RendererTest : Test
   private Str r(Str template, Str:Obj map)
   {
 // Parser(template.in).parse.dump(Env.cur.out, 0)
-    return Fanbars.renderStr(template, map)
+    return Fanbars.compile(template).renderStr(map)
   }
 }

@@ -6,37 +6,51 @@
 //   30 July 2020  Andy Frank  Creation
 //
 
+using concurrent
+
 *************************************************************************
 ** Fanbars
 *************************************************************************
 
 const class Fanbars
 {
-  ** Render template to a 'Str', where 'template' can be
-  ** a 'Str' or a 'File'.
-  static Str renderStr(Obj template, Str:Obj map)
+  ** Compile the template into a 'Fanbars' instance, where
+  ** 'template' can be an 'InStream', 'Str', or 'File'.
+  static new compile(Obj template)
   {
-    buf := StrBuf()
-    render(template, map, buf.out)
-    return buf.toStr
-  }
-
-  ** Render template to given OutStream, where 'template'
-  ** can be a 'Str' or a 'File'.
-  static Void render(Obj template, Str:Obj map, OutStream out)
-  {
-    InStream? in
+    InStream? in := template as InStream
     try
     {
       // get our instream
       if (template is Str)  in = ((Str)template).in
       if (template is File) in = ((File)template).in
-      if (in == null) throw ArgErr("Invalid 'template' argument")
+      if (in  == null) throw ArgErr("Invalid 'template' argument")
 
-      // parse and render
+      // parse template an return instance
       def := Parser(in).parse
-      Renderer.render(def, map, out)
+      return Fanbars { it.defRef = AtomicRef(Unsafe(def)) }
     }
     finally { in?.close }
   }
+
+  ** Render template to a 'Str' instancce.
+  Str renderStr(Str:Obj map)
+  {
+    buf := StrBuf()
+    render(map, buf.out)
+    return buf.toStr
+  }
+
+  ** Render template to given OutStream.
+  Void render(Str:Obj map, OutStream out)
+  {
+    def := (defRef.val as Unsafe).val
+    Renderer.render(def, map, out)
+  }
+
+  ** Private ctor.
+  private new make(|This| f) { f(this) }
+
+  // TODO FIXIT: until we can get our AST to be const :(
+  private const AtomicRef defRef
 }
