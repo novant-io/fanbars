@@ -1,6 +1,8 @@
 # Changelog
 
 ## Version 0.3 (working)
+* Split into separate compile+render steps so we can cache compiled instances
+* Add `pod.fandoc`
 
 ## Version 0.2 (5-Aug-2020)
 * Fix var substitution to escape text by default
