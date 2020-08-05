@@ -36,7 +36,8 @@ internal const class Renderer
 
       case VarDef#:
         v := resolveVar(def, map)
-        out.print(v==null ? "" : v.toStr)
+        // out.print(v==null ? "" : v.toStr)
+        out.writeXml(v==null ? "" : v.toStr, OutStream.xmlEscQuotes)
 
       case RawTextDef#:
         out.print(def->text)
