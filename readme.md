@@ -97,6 +97,19 @@ If blocks use the `{{#if var}}` syntax, where the value of `var` is considered
     output:
       Hello Bob!
 
+Use `#ifnot` to check the inverse of `var`:
+
+    template:
+      {{#ifnot isLoggedIn}}
+        Not logged in!
+      {{/ifnot}}
+
+    map:
+      ["isLoggedIn":false]
+
+    output:
+      Not logged in!
+
 Each blocks use the `{{#each v in var}}` syntax, where the value of `v` is
 replaced with each element in `var`:
 
