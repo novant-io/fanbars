@@ -127,9 +127,17 @@ internal class Parser
                   parent.children.push(def)
                   stack.push(def)
 
-                case "/if":    stack.pop
-                case "/ifnot": stack.pop
-                case "/each":  stack.pop
+                case "/if":
+                  last := stack.pop
+                  if (last isnot IfDef) throw unmatchedDef(last)
+
+                case "/ifnot":
+                  last := stack.pop
+                  if (last isnot IfNotDef) throw unmatchedDef(last)
+
+                case "/each":
+                  last := stack.pop
+                  if (last isnot EachDef) throw unmatchedDef(last)
 
                 default: throw unexpectedToken(token)
               }
@@ -304,6 +312,15 @@ internal class Parser
     token.isEos
       ? parseErr("Unexpected end of stream")
       : parseErr("Unexpected token: '$token.val'")
+  }
+
+  ** Throw ParseErr
+  private Err unmatchedDef(Def? def)
+  {
+    if (def is IfDef)    return parseErr("Expecting {{/if}}")
+    if (def is IfNotDef) return parseErr("Expecting {{/ifnot}}")
+    if (def is EachDef)  return parseErr("Expecting {{/each}}")
+    return parseErr("Unmatched closing statement")
   }
 
 //////////////////////////////////////////////////////////////////////////

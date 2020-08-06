@@ -183,6 +183,14 @@ class ParserTest : Test
     d = d.children[1]
     verifyEq(d.children.size, 1)
     verifyRaw(d.children[0], "world")
+
+    // unmatched closing staches
+    verifyErr(ParseErr#) {
+      p("{{#if foo}}
+           hello
+           {{#ifnot bar}}world{{/if}}
+           {{/ifnot}}")
+    }
   }
 
 //////////////////////////////////////////////////////////////////////////
