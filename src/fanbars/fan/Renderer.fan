@@ -34,7 +34,7 @@ internal const class Renderer
         orig  := map[iname]
         vals.each |v|
         {
-          map[iname] = v
+          if (v != null) map[iname] = v
           def.children.each |kid| { render(kid, map, out) }
         }
         if (orig != null) map[iname] = orig
