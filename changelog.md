@@ -2,7 +2,7 @@
 
 ## Version 0.4 (working)
 * Add support for `#ifnot` keyword
-* Tweak Renderer to normalize invalid slot paths as `null`
+* Tweak Renderer to render invalid slot paths as `null`
 
 ## Version 0.3 (5-Aug-2020)
 * Split into separate compile+render steps so we can cache compiled instances
