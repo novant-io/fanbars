@@ -62,6 +62,10 @@ class RendererTest : Test
 
     m = r(s, [:])
     verifyEq(m, "0x")
+
+    s = "0x{{foo.first.toHex.doesNotExist}}"
+    m = r(s, ["foo":[128]])
+    verifyEq(m, "0x")
   }
 
   Void testVarEscape()
