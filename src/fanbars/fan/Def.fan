@@ -47,6 +47,25 @@ internal class IfDef : Def
 }
 
 *************************************************************************
+** IfNotDef
+*************************************************************************
+
+internal class IfNotDef : Def
+{
+  new make(|This| f) { f(this) }
+
+  VarDef var
+
+  override Void dump(OutStream out, Int indent)
+  {
+    out.print(Str.spaces(indent))
+    out.printLine("#ifnot '${var.dumpPath}'")
+    children.each |k| { k.dump(out, indent+2) }
+    out.print(Str.spaces(indent)).printLine("/ifnot")
+  }
+}
+
+*************************************************************************
 ** EachDef
 *************************************************************************
 

@@ -1,6 +1,7 @@
 # Changelog
 
 ## Version 0.4 (working)
+* Add support for `#ifnot` keyword
 
 ## Version 0.3 (5-Aug-2020)
 * Split into separate compile+render steps so we can cache compiled instances

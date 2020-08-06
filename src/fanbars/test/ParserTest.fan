@@ -147,6 +147,18 @@ class ParserTest : Test
     verifyErr(ParseErr#) { p("{{#if name}} hello") }
   }
 
+ Void testIfNotBasic()
+  {
+    d := p("{{#ifnot foo}}hello{{/ifnot}}")
+    verifyEq(d.children.size, 1)
+    verifyIfNot(d.children[0], ["foo"])
+    verifyRaw(d.children[0].children[0], "hello")
+
+    verifyErr(ParseErr#) { p("{{#ifnot}}") }
+    verifyErr(ParseErr#) { p("{{#ifnot name}}") }
+    verifyErr(ParseErr#) { p("{{#ifnot name}} hello") }
+  }
+
   Void testIfNested()
   {
     // srip spaces/newlines to make test cases easier
@@ -223,6 +235,11 @@ class ParserTest : Test
     verifyVar(d->var, path)
   }
 
+  private Void verifyIfNot(Def d, Str[] path)
+  {
+    verifyEq(d.typeof, IfNotDef#)
+    verifyVar(d->var, path)
+  }
   private Void verifyEach(Def d, Str iter, Str[] path)
   {
     verifyEq(d.typeof, EachDef#)

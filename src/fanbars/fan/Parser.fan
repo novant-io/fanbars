@@ -112,6 +112,12 @@ internal class Parser
                   parent.children.push(def)
                   stack.push(def)
 
+                case "#ifnot":
+                  var := parseVarDef
+                  def := IfNotDef { it.var=var }
+                  parent.children.push(def)
+                  stack.push(def)
+
                 case "#each":
                   iter := parseVarDef(null, 1)
                   token = nextToken(TokenType.identifier)
@@ -121,8 +127,9 @@ internal class Parser
                   parent.children.push(def)
                   stack.push(def)
 
-                case "/if":   stack.pop
-                case "/each": stack.pop
+                case "/if":    stack.pop
+                case "/ifnot": stack.pop
+                case "/each":  stack.pop
 
                 default: throw unexpectedToken(token)
               }

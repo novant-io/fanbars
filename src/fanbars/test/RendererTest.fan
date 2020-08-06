@@ -93,6 +93,20 @@ class RendererTest : Test
     verifyEq(m, "Hi Bob!")
   }
 
+  Void testIfNotBasic()
+  {
+    s := "{{#ifnot foo}}hello{{/ifnot}}"
+    m := r(s, ["foo":true])
+    verifyEq(m, "")
+
+    m = r(s, ["foo":false])
+    verifyEq(m, "hello")
+
+    s = "{{#ifnot foo}}Hi {{name}}!{{/ifnot}}"
+    m = r(s, ["foo":false, "name":"Bob"])
+    verifyEq(m, "Hi Bob!")
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // Each
 //////////////////////////////////////////////////////////////////////////

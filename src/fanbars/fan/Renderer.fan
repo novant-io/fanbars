@@ -22,6 +22,11 @@ internal const class Renderer
         if (isTruthy(v))
           def.children.each |kid| { render(kid, map, out) }
 
+      case IfNotDef#:
+        v := resolveVar(def->var, map)
+        if (!isTruthy(v))
+          def.children.each |kid| { render(kid, map, out) }
+
       case EachDef#:
         List? vals:= resolveVar(def->var, map) as List
         if (vals == null) return
