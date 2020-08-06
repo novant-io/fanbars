@@ -111,6 +111,13 @@ class RendererTest : Test
     verifyEq(m, "Hi Bob!")
   }
 
+  Void testIfComplex()
+  {
+    s := "{{#if foo}}foo{{/if}}{{#ifnot foo}}bar{{/ifnot}}"
+    verifyEq(r(s,["foo":true]),  "foo")
+    verifyEq(r(s,["foo":false]), "bar")
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // Each
 //////////////////////////////////////////////////////////////////////////
@@ -132,6 +139,36 @@ class RendererTest : Test
     m = r(s, ["v":"foo", "items":[1,2,3]])
     verifyEq(m, "foo, Item 1, Item 2, Item 3, foo")
   }
+
+//////////////////////////////////////////////////////////////////////////
+// Complex
+//////////////////////////////////////////////////////////////////////////
+
+  Void testComplex()
+  {
+    s := "{{#each row in rows}}
+            <tr>
+            {{#each item in row}}
+              <td>
+                {{#if item.isNaN}}?{{/if}}
+                {{#ifnot item.isNaN}}{{item}}{{/ifnot}}
+              </td>
+            {{/each}}
+            </tr>
+          {{/each}}".splitLines.join("") |s| { s.trim }
+
+    m := [
+      "rows":[
+        [1,Float.nan,3],
+        [4,5,Float.nan],
+      ]
+    ]
+
+    t := r(s,m)
+    verifyEq(t, "<tr><td>1</td><td>?</td><td>3</td></tr>" +
+                "<tr><td>4</td><td>5</td><td>?</td></tr>")
+  }
+
 
 //////////////////////////////////////////////////////////////////////////
 // Newlines
