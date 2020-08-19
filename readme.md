@@ -10,6 +10,7 @@
 Fanbars can be used for HTML, config files, source code - anything. It works
 by expanding tags in a template using values provided in a `Map`.
 
+    {{!-- Show the current cart contents --}}
     {{#if isLoggedIn}}
       Hello, {{username}}!
       <ul>
