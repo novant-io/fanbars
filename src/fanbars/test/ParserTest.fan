@@ -211,6 +211,26 @@ class ParserTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Comments
+//////////////////////////////////////////////////////////////////////////
+
+  Void testComments()
+  {
+    d := p("{{!-- hello --}}")
+    verifyEq(d.children.size, 0)
+
+    d = p("{{!-- hello {{var}} {{#if x}}bar{{/if}} --}}")
+    verifyEq(d.children.size, 0)
+
+    verifyErr(ParseErr#) { p("{{! foo --}}")  }
+    verifyErr(ParseErr#) { p("{{!- foo --}}") }
+    verifyErr(ParseErr#) { p("{{!-- foo")     }
+    verifyErr(ParseErr#) { p("{{!-- foo -")   }
+    verifyErr(ParseErr#) { p("{{!-- foo --")  }
+    verifyErr(ParseErr#) { p("{{!-- foo --}") }
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Support
 //////////////////////////////////////////////////////////////////////////
 

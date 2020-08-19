@@ -207,7 +207,36 @@ internal class Parser
     // open {{
     if (ch == '{' && peek == '{')
     {
-      read // eat second }
+      read // eat second {
+
+      // comment
+      if (peek == '!')
+      {
+        read // eat !
+        ch = read; if (ch != '-') throw unexpectedChar(ch)
+        ch = read; if (ch != '-') throw unexpectedChar(ch)
+        while (true)
+        {
+          ch = read
+          if (ch == null) throw unexpectedChar(null)
+          if (ch == '-' && peek == '-')
+          {
+            stack := [ch, read]
+            if (peek == '}')
+            {
+              stack.add(read)
+              if (peek == '}') { read; break }
+            }
+            // check for EOS here before we unread to avoid inf loop
+            if (peek == null) throw unexpectedChar(null)
+            stack.eachr |x| { in.unread(x) }
+          }
+          buf.addChar(ch)
+        }
+        return Token(TokenType.comment, buf.toStr.trim)
+      }
+
+      // stash directive
       tokInStash = true
       if (peek == '{')
       {
@@ -332,6 +361,7 @@ internal class Parser
   private InStream in               // input
   private Int line := 1             // current line
   private Def[] stack := [,]        // AST node stack
+  private Int commentDepth := 0     // track comment {{!-- depth
   private Bool tokInStash := false  // are we tokenizing inside {{ ... }}
   private StrBuf buf := StrBuf()    // resuse buf in nextToken
 }

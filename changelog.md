@@ -1,6 +1,7 @@
 # Changelog
 
 ## Version 0.5 (working)
+* Add support for `{{!-- comments --}}`
 
 ## Version 0.4 (6-Aug-2020)
 * Add support for `#ifnot` keyword
