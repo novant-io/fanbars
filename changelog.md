@@ -1,6 +1,8 @@
 # Changelog
 
-## Version 0.5 (working)
+## Version 0.6 (working)
+
+## Version 0.5 (19-Aug-2020)
 * Add support for `{{!-- comments --}}`
 
 ## Version 0.4 (6-Aug-2020)
