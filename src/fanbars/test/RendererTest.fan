@@ -140,6 +140,20 @@ class RendererTest : Test
     verifyEq(m, "foo, Item 1, Item 2, Item 3, foo")
   }
 
+  Void testEachVarPath()
+  {
+    s := "{{#each v in items}}{{v.name}} is {{v.price}} [{{v.size}}], {{/each}}"
+    m := r(s, [:])
+    verifyEq(m, "")
+
+    m = r(s, ["items":[
+      ["name":"Alpha", "price":45],
+      ["name":"Beta",  "price":60, "foo":true],
+      ["name":"Gamma", "price":17, "foo":true, "bar":0],
+    ]])
+    verifyEq(m, "Alpha is 45 [2], Beta is 60 [3], Gamma is 17 [4], ")
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // Complex
 //////////////////////////////////////////////////////////////////////////

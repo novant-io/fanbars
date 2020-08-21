@@ -1,6 +1,7 @@
 # Changelog
 
 ## Version 0.6 (working)
+* Fix `resolveVar` behavoir with `#each` and `Map[]` lists
 
 ## Version 0.5 (19-Aug-2020)
 * Add support for `{{!-- comments --}}`

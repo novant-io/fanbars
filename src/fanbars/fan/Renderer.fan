@@ -70,6 +70,11 @@ internal const class Renderer
     def.path.eachRange(1..-1) |n|
     {
       if (val == null) return
+      if (val is Map)
+      {
+        Map m := val
+        if (m.containsKey(n)) { val=m[n]; return }
+      }
       s := val.typeof.slot(n, false)
       if (s == null) { val=null; return }
       if (s is Method) val = ((Method)s).call(val)
