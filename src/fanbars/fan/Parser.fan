@@ -19,6 +19,7 @@ internal enum class TokenType
   comment,
   keyword,
   identifier,
+  partial,
   dot,
   raw,
   eos
@@ -46,6 +47,7 @@ internal const class Token
   Bool isComment()       { type == TokenType.comment       }
   Bool isKeyword()       { type == TokenType.keyword       }
   Bool isIdentifier()    { type == TokenType.identifier    }
+  Bool isPartial()       { type == TokenType.partial       }
   Bool isDot()           { type == TokenType.dot           }
   Bool isRaw()           { type == TokenType.raw           }
   Bool isEos()           { type == TokenType.eos           }
@@ -94,6 +96,12 @@ internal class Parser
           def := parseVarDef(null, Int.maxVal, false)
           parent.children.add(def)
           nextToken(TokenType.closeTriStash) // eat closing }}}
+
+        case TokenType.partial:
+          var := parseVarDef(null, 1)
+          def := PartialDef { it.var=var }
+          parent.children.push(def)
+          nextToken(TokenType.closeStash) // eat closing }}
 
         case TokenType.openStash:
           token = nextToken
@@ -243,6 +251,14 @@ internal class Parser
         read // eat third }
         return Token(TokenType.openTriStash, "{{{")
       }
+
+      // partial
+      if (peek == '>')
+      {
+        read // eat >
+        return Token(TokenType.partial, "{{>")
+      }
+
       return Token(TokenType.openStash, "{{")
     }
 

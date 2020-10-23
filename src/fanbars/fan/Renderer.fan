@@ -46,6 +46,10 @@ internal const class Renderer
         else
           out.print(v==null ? "" : v.toStr)
 
+      case PartialDef#:
+        partial := resolvePartial(def, map)
+        partial?.render(out, map)
+
       case RawTextDef#:
         out.print(def->text)
 
@@ -81,5 +85,12 @@ internal const class Renderer
       else val = ((Field)s).get(val)
     }
     return val
+  }
+
+  static Fanbars? resolvePartial(PartialDef def, Str:Obj map)
+  {
+    partials := map["partials"] as Map
+    if (partials == null) return null
+    return partials[def.var.path[0]] as Fanbars
   }
 }
