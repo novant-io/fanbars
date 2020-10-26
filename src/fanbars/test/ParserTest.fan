@@ -69,6 +69,14 @@ class ParserTest : Test
     verifyEq(d.children.size, 1)
     verifyVar(d.children.first, ["foo_bar"])
 
+    d = p("{{ foo}}")
+    verifyEq(d.children.size, 1)
+    verifyVar(d.children.first, ["foo"])
+
+    d = p("{{ foo }}")
+    verifyEq(d.children.size, 1)
+    verifyVar(d.children.first, ["foo"])
+
     verifyErr(ParseErr#) { p("{{123}}") }
     verifyErr(ParseErr#) { p("{{_}}") }
     verifyErr(ParseErr#) { p("{{-}}") }
@@ -123,6 +131,14 @@ class ParserTest : Test
   Void testVarsEscape()
   {
     d := p("{{{foo}}}")
+    verifyEq(d.children.size, 1)
+    verifyVar(d.children.first, ["foo"], false)
+
+    d = p("{{{ foo}}}")
+    verifyEq(d.children.size, 1)
+    verifyVar(d.children.first, ["foo"], false)
+
+    d = p("{{{ foo }}}")
     verifyEq(d.children.size, 1)
     verifyVar(d.children.first, ["foo"], false)
 
