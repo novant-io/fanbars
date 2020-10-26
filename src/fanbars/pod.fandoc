@@ -60,6 +60,10 @@ syntax: fantom
 f := Fanbars.compile(template)
 s := f.renderStr(map)  // return as Str
 f.render(out, map)     // stream to out
+
+// render using partials
+partials := ["header": Fanbars.compile(header), "footer": Fanbars.compile(footer)]
+s := Fanbars.compile(template).renderStr(map, partials)
 <pre
 
 Syntax [#syntax]
@@ -131,6 +135,24 @@ replaced with each element in 'var':
       Item #1
       Item #2
       Item #3
+
+Partials use the `{{> var}}` syntax to inject content from another template. The
+partial is rendered at runtime. Partials must be compiled ahead of time and passed to
+the `render()` call.
+
+    welcome:
+      Welcome, {{user}}!
+
+    template:
+      {{> welcome}}
+      Enjoy your stay.
+
+    map:
+      ["user": "Andy"]
+
+    output:
+      Welcome, Andy!
+      Enjoy your stay
 
 Comments use the '{{!-- text --}}' sytnax.  Comments are omitted from the
 rendered output:

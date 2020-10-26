@@ -189,17 +189,14 @@ class RendererTest : Test
 
   Void testPartials()
   {
-    partials := [
+    p := [
       "raw": Fanbars.compile("Raw Partial"),
       "var": Fanbars.compile("Hello {{user}}!"),
     ]
-    m := [
-      "user": "Kvoth",
-      "partials": partials,
-    ]
+    m := ["user": "Kvoth"]
     s := "{{> raw}}
           {{> var}}"
-    t := r(s,m)
+    t := r(s,m,p)
     verifyEq(t, "Raw Partial
                  Hello Kvoth!")
   }
@@ -283,9 +280,9 @@ class RendererTest : Test
 // Support
 //////////////////////////////////////////////////////////////////////////
 
-  private Str r(Str template, Str:Obj map)
+  private Str r(Str template, Str:Obj map, Str:Obj partials := [:])
   {
 // Parser(template.in).parse.dump(Env.cur.out, 0)
-    return Fanbars.compile(template).renderStr(map)
+    return Fanbars.compile(template).renderStr(map, partials)
   }
 }
