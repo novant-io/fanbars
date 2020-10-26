@@ -13,19 +13,19 @@
 internal const class Renderer
 {
   ** Render def to 'OutStream'.
-  static Void render(Def def, Str:Obj map, OutStream out)
+  static Void render(Def def, Str:Obj map, Str:Obj partials, OutStream out)
   {
     switch (def.typeof)
     {
       case IfDef#:
         v := resolveVar(def->var, map)
         if (isTruthy(v))
-          def.children.each |kid| { render(kid, map, out) }
+          def.children.each |kid| { render(kid, map, partials, out) }
 
       case IfNotDef#:
         v := resolveVar(def->var, map)
         if (!isTruthy(v))
-          def.children.each |kid| { render(kid, map, out) }
+          def.children.each |kid| { render(kid, map, partials, out) }
 
       case EachDef#:
         List? vals:= resolveVar(def->var, map) as List
@@ -35,7 +35,7 @@ internal const class Renderer
         vals.each |v|
         {
           if (v != null) map[iname] = v
-          def.children.each |kid| { render(kid, map, out) }
+          def.children.each |kid| { render(kid, map, partials, out) }
         }
         if (orig != null) map[iname] = orig
 
@@ -46,11 +46,15 @@ internal const class Renderer
         else
           out.print(v==null ? "" : v.toStr)
 
+      case PartialDef#:
+        partial := resolvePartial(def, partials)
+        partial?.render(out, map, partials)
+
       case RawTextDef#:
         out.print(def->text)
 
       default:
-        def.children.each |kid| { render(kid, map, out) }
+        def.children.each |kid| { render(kid, map, partials, out) }
     }
   }
 
@@ -81,5 +85,10 @@ internal const class Renderer
       else val = ((Field)s).get(val)
     }
     return val
+  }
+
+  static Fanbars? resolvePartial(PartialDef def, Str:Obj partials)
+  {
+    partials[def.var.path[0]] as Fanbars
   }
 }

@@ -121,3 +121,20 @@ internal class RawTextDef : Def
     out.printLine("raw ${text.toCode}")
   }
 }
+
+*************************************************************************
+** PartialDef
+*************************************************************************
+
+internal class PartialDef : Def
+{
+  new make(|This| f) { f(this) }
+
+  VarDef var
+
+  override Void dump(OutStream out, Int indent)
+  {
+    out.print(Str.spaces(indent))
+    out.printLine("{{> $var.dumpPath")
+  }
+}

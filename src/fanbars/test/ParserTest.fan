@@ -231,6 +231,17 @@ class ParserTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Partials
+//////////////////////////////////////////////////////////////////////////
+
+  Void testPartials()
+  {
+    d := p("{{> header}}")
+    verifyEq(d.children.size, 1)
+    verifyPartial(d.children[0], "header")
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Support
 //////////////////////////////////////////////////////////////////////////
 
@@ -273,5 +284,11 @@ class ParserTest : Test
     verifyEq(d.typeof, EachDef#)
     verifyVar(d->iter, [iter])
     verifyVar(d->var, path)
+  }
+
+  private Void verifyPartial(Def d, Str ref)
+  {
+    verifyEq(d.typeof, PartialDef#)
+    verifyVar(d->var, [ref])
   }
 }

@@ -34,18 +34,18 @@ const class Fanbars
   }
 
   ** Render template to a 'Str' instance.
-  Str renderStr(Str:Obj map)
+  Str renderStr(Str:Obj map, Str:Obj partials := [:])
   {
     buf := StrBuf()
-    render(buf.out, map)
+    render(buf.out, map, partials)
     return buf.toStr
   }
 
   ** Render template to given OutStream.
-  Void render(OutStream out, Str:Obj map)
+  Void render(OutStream out, Str:Obj map, Str:Obj partials := [:])
   {
     def := (defRef.val as Unsafe).val
-    Renderer.render(def, map, out)
+    Renderer.render(def, map, partials, out)
   }
 
   ** Private ctor.
