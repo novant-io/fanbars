@@ -1,6 +1,8 @@
 # Changelog
 
-## Version 0.7 (working)
+## Version 0.8 (working)
+
+## Version 0.7 (26-Oct-2020)
 * Add support for `{{> partials}}`
 
 ## Version 0.6 (21-Aug-2020)
