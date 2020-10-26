@@ -1,6 +1,9 @@
 # Changelog
 
-## Version 0.6 (working)
+## Version 0.7 (working)
+* Add support for `{{> partials}}`
+
+## Version 0.6 (21-Aug-2020)
 * Fix `resolveVar` behavoir with `#each` and `Map[]` lists
 
 ## Version 0.5 (19-Aug-2020)
