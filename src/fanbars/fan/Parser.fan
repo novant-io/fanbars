@@ -290,6 +290,7 @@ internal class Parser
         buf.addChar(ch)
         if (peek?.isAlpha != true) throw unexpectedChar(peek)
         while (peek?.isAlpha == true) buf.addChar(read)
+        if (ch == '/') while (peek.isSpace) ch = read // eat trailing space only for {{/xxx}}
         return Token(TokenType.keyword, buf.toStr)
       }
 

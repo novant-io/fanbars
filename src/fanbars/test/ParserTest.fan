@@ -158,6 +158,11 @@ class ParserTest : Test
     verifyIf(d.children[0], ["foo"])
     verifyRaw(d.children[0].children[0], "hello")
 
+    d = p("{{ #if foo }}hello{{ /if }}")
+    verifyEq(d.children.size, 1)
+    verifyIf(d.children[0], ["foo"])
+    verifyRaw(d.children[0].children[0], "hello")
+
     verifyErr(ParseErr#) { p("{{#if}}") }
     verifyErr(ParseErr#) { p("{{#if name}}") }
     verifyErr(ParseErr#) { p("{{#if name}} hello") }
@@ -166,6 +171,11 @@ class ParserTest : Test
  Void testIfNotBasic()
   {
     d := p("{{#ifnot foo}}hello{{/ifnot}}")
+    verifyEq(d.children.size, 1)
+    verifyIfNot(d.children[0], ["foo"])
+    verifyRaw(d.children[0].children[0], "hello")
+
+    d = p("{{ #ifnot foo }}hello{{ /ifnot }}")
     verifyEq(d.children.size, 1)
     verifyIfNot(d.children[0], ["foo"])
     verifyRaw(d.children[0].children[0], "hello")
@@ -216,6 +226,11 @@ class ParserTest : Test
   Void testEachBasic()
   {
     d := p("{{#each v in items}}test{{/each}}")
+    verifyEq(d.children.size, 1)
+    verifyEach(d.children[0], "v", ["items"])
+    verifyRaw(d.children[0].children[0], "test")
+
+    d = p("{{ #each v in items }}test{{ /each }}")
     verifyEq(d.children.size, 1)
     verifyEach(d.children[0], "v", ["items"])
     verifyRaw(d.children[0].children[0], "test")
