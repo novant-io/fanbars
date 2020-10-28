@@ -221,6 +221,7 @@ internal class Parser
       if (peek == '!')
       {
         read // eat !
+        cnum := 1 // number of nested comments
         ch = read; if (ch != '-') throw unexpectedChar(ch)
         ch = read; if (ch != '-') throw unexpectedChar(ch)
         while (true)
@@ -229,12 +230,29 @@ internal class Parser
           if (ch == null) throw unexpectedChar(null)
           if (ch == '-' && peek == '-')
           {
+            // check for nested comments
+            if (buf.size > 2 && buf[-3..-1] == "{{!")
+            {
+              cnum++
+              buf.addChar(ch)
+              buf.addChar(read)  // eat second '-'
+              continue
+            }
+
+            // check for closing comment
             stack := [ch, read]
             if (peek == '}')
             {
               stack.add(read)
-              if (peek == '}') { read; break }
+              if (peek == '}')
+              {
+                read
+                cnum--
+                if (cnum == 0) break
+                else continue
+              }
             }
+
             // check for EOS here before we unread to avoid inf loop
             if (peek == null) throw unexpectedChar(null)
             stack.eachr |x| { in.unread(x) }

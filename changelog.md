@@ -3,6 +3,7 @@
 ## Version 0.8 (working)
 * Formalize support for leading/trailing whitespace inside `{{ }}`
 * Fix var leakage from `#each` loops
+* Add support for nested comments
 
 ## Version 0.7 (26-Oct-2020)
 * Add support for `{{> partials}}`

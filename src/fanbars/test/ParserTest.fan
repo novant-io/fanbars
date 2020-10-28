@@ -253,12 +253,35 @@ class ParserTest : Test
     d = p("{{!-- hello {{var}} {{#if x}}bar{{/if}} --}}")
     verifyEq(d.children.size, 0)
 
+    d = p("{{!-- foo --}}{{!-- bar --}}")
+    verifyEq(d.children.size, 0)
+
     verifyErr(ParseErr#) { p("{{! foo --}}")  }
     verifyErr(ParseErr#) { p("{{!- foo --}}") }
     verifyErr(ParseErr#) { p("{{!-- foo")     }
     verifyErr(ParseErr#) { p("{{!-- foo -")   }
     verifyErr(ParseErr#) { p("{{!-- foo --")  }
     verifyErr(ParseErr#) { p("{{!-- foo --}") }
+    verifyErr(ParseErr#) { p("{{!-- foo }}{{!-- bar}}") }
+  }
+
+  Void testCommentsNested()
+  {
+    d := p("{{!-- foo {{!-- bar --}} zar --}}")
+    verifyEq(d.children.size, 0)
+
+    d = p("{{!--
+            foo
+             {{!--
+              bar
+               {{!--
+                zar
+               --}}
+             --}}
+           --}}")
+    verifyEq(d.children.size, 0)
+
+    verifyErr(ParseErr#) { p("{{!-- foo {{!-- bar --}}") }
   }
 
 //////////////////////////////////////////////////////////////////////////
