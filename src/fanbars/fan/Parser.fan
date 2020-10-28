@@ -297,6 +297,7 @@ internal class Parser
       if (!ch.isAlpha) throw unexpectedChar(ch)
       buf.addChar(ch)
       while (isValidIdentiferChar(peek)) buf.addChar(read)
+      while (peek.isSpace) ch = read // eat trailing space
       return Token(TokenType.identifier, buf.toStr)
     }
 
