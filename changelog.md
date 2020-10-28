@@ -1,6 +1,8 @@
 # Changelog
 
-## Version 0.8 (working)
+## Version 0.9 (working)
+
+## Version 0.8 (28-Oct-2020)
 * Formalize support for leading/trailing whitespace inside `{{ }}`
 * Fix var leakage from `#each` loops
 * Add support for nested comments

@@ -8,7 +8,7 @@ class Build : build::BuildPod
   {
     podName = "fanbars"
     summary = "Semi-logic-less templates"
-    version = Version("0.8")
+    version = Version("0.9")
     meta = [
       "license.name": "MIT",
       "vcs.name":     "Git",
