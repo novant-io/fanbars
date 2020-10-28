@@ -38,6 +38,7 @@ internal const class Renderer
           def.children.each |kid| { render(kid, map, partials, out) }
         }
         if (orig != null) map[iname] = orig
+        else map.remove(iname)
 
       case VarDef#:
         v := resolveVar(def, map)

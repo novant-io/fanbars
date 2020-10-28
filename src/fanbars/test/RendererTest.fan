@@ -154,6 +154,15 @@ class RendererTest : Test
     verifyEq(m, "Alpha is 45 [2], Beta is 60 [3], Gamma is 17 [4], ")
   }
 
+  Void testEachVarLeak()
+  {
+    s := """{{#each v in items}}{{v.name}}{{/each}}{{#if v}}I should not see this{{/if}}"""
+    m := r(s, ["items":[
+      ["name":"foo"],
+    ]])
+    verifyEq("foo", m)
+  }
+
 //////////////////////////////////////////////////////////////////////////
 // Complex
 //////////////////////////////////////////////////////////////////////////
