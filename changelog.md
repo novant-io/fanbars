@@ -1,6 +1,7 @@
 # Changelog
 
 ## Version 0.9 (working)
+* Update copyright to Novant LLC
 
 ## Version 0.8 (28-Oct-2020)
 * Formalize support for leading/trailing whitespace inside `{{ }}`

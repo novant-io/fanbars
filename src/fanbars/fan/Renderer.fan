@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2020, Andy Frank
+// Copyright (c) 2020, Novant LLC
 // Licensed under the MIT License
 //
 // History:

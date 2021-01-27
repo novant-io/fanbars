@@ -10,9 +10,11 @@ class Build : build::BuildPod
     summary = "Semi-logic-less templates"
     version = Version("0.9")
     meta = [
+      "org.name":     "Novant",
+      "org.uri":      "https://novant.io/",
       "license.name": "MIT",
       "vcs.name":     "Git",
-      "vcs.uri":      "https://github.com/afrankvt/fanbars",
+      "vcs.uri":      "https://github.com/novant-io/fanbars",
       "repo.public":  "true",
       "repo.tags":    "web",
     ]
