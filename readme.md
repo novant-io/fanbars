@@ -92,6 +92,17 @@ replace text unescaped use the "triple-stash" `{{{`:
     output:
       This is A&amp;W and this is A&W
 
+Method chaining is supported for `Obj` variables:
+
+    template:
+      The last day of the month is {{date.lastOfMonth.toLocale}}
+
+    map:
+      ["data":Date.today]
+
+    output:
+      The last day of the month is 31-Jan-2022
+
 ### If Blocks
 
 If blocks use the `{{#if var}}` syntax, where the value of `var` is considered
