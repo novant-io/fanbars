@@ -141,9 +141,9 @@ replaced with each element in `var`:
 
 ### Partials
 
-Partials use the `{{> var}}` syntax to inject content from another template.
-The partial is rendered at runtime. Partials must be compiled ahead of time and
-passed to `render()`:
+Partials use the `{{#partial var}}` syntax to inject content from another
+template. The partial is rendered at runtime. Partials must be compiled ahead
+of time and passed to `render()`:
 
     Fantom:
       p := ["welcome": Fanbars.compile(welcome)]
@@ -153,7 +153,7 @@ passed to `render()`:
       Welcome, {{user}}!
 
     template:
-      {{> welcome}}
+      {{#partial welcome}}
       Enjoy your stay.
 
     map:

@@ -210,10 +210,20 @@ class RendererTest : Test
       "raw": Fanbars.compile("Raw Partial"),
       "var": Fanbars.compile("Hello {{user}}!"),
     ]
+
+    // old syntax
     m := ["user": "Kvoth"]
     s := "{{> raw}}
           {{> var}}"
     t := r(s,m,p)
+    verifyEq(t, "Raw Partial
+                 Hello Kvoth!")
+
+    // new syntax
+    m = ["user": "Kvoth"]
+    s = "{{#partial raw}}
+         {{#partial var}}"
+    t = r(s,m,p)
     verifyEq(t, "Raw Partial
                  Hello Kvoth!")
   }

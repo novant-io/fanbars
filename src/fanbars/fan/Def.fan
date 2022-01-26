@@ -135,6 +135,6 @@ internal class PartialDef : Def
   override Void dump(OutStream out, Int indent)
   {
     out.print(Str.spaces(indent))
-    out.printLine("{{> $var.dumpPath")
+    out.printLine("{{#partial $var.dumpPath")
   }
 }

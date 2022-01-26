@@ -19,6 +19,7 @@ internal enum class TokenType
   comment,
   keyword,
   identifier,
+  // TODO: this goes away
   partial,
   dot,
   raw,
@@ -97,6 +98,7 @@ internal class Parser
           parent.children.add(def)
           nextToken(TokenType.closeTriStash) // eat closing }}}
 
+        // TODO: this is deprecated in favor of #partial syntax
         case TokenType.partial:
           var := parseVarDef(null, 1)
           def := PartialDef { it.var=var }
@@ -134,6 +136,11 @@ internal class Parser
                   def := EachDef { it.iter=iter; it.var=var }
                   parent.children.push(def)
                   stack.push(def)
+
+                case "#partial":
+                  var := parseVarDef(null, 1)
+                  def := PartialDef { it.var=var }
+                  parent.children.push(def)
 
                 case "/if":
                   last := stack.pop
