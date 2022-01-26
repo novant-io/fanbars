@@ -60,6 +60,8 @@ f.render(out, map)     // stream to out
 
 ## Syntax
 
+### Variables
+
 Variable substitution uses the `{{var}}` syntax:
 
     template:
@@ -83,6 +85,8 @@ replace text unescaped use the "triple-stash" `{{{`:
 
     output:
       This is A&amp;W and this is A&W
+
+### If Blocks
 
 If blocks use the `{{#if var}}` syntax, where the value of `var` is considered
 `false` if its `null` or `false`, everything else is `true`:
@@ -111,6 +115,8 @@ Use `#ifnot` to check the inverse of `var`:
     output:
       Not logged in!
 
+### Each Iterator Blocks
+
 Each blocks use the `{{#each v in var}}` syntax, where the value of `v` is
 replaced with each element in `var`:
 
@@ -126,6 +132,8 @@ replaced with each element in `var`:
       Item #1
       Item #2
       Item #3
+
+### Partials
 
 Partials use the `{{> var}}` syntax to inject content from another template.
 The partial is rendered at runtime. Partials must be compiled ahead of time and
@@ -148,6 +156,8 @@ passed to `render()`:
     output:
       Welcome, Andy!
       Enjoy your stay
+
+### Comments
 
 Comments use the `{{!-- text --}}` sytnax.  Comments are omitted from the
 rendered output:
