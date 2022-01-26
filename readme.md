@@ -60,6 +60,12 @@ f.render(out, map)     // stream to out
 
 ## Syntax
 
+  * [Variables](#variables)
+  * [If Blocks](#if-blocks)
+  * [Each Blocks](#each-iterator-blocks)
+  * [Partials](#partials)
+  * [Comments](#comments)
+
 ### Variables
 
 Variable substitution uses the `{{var}}` syntax:
