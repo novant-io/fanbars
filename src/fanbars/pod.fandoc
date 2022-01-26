@@ -65,6 +65,9 @@ f.render(out, map)     // stream to out
 Syntax [#syntax]
 ================
 
+Variables
+---------
+
 Variable substitution uses the '{{var}}' syntax:
 
     template:
@@ -88,6 +91,20 @@ replace text unescaped use the "triple-stash" '{{{':
 
     output:
       This is A&amp;W and this is A&W
+
+Method chaining is supported for `Obj` variables:
+
+    template:
+      The last day of the month is {{date.lastOfMonth.toLocale}}
+
+    map:
+      ["data":Date.today]
+
+    output:
+      The last day of the month is 31-Jan-2022
+
+If Blocks
+---------
 
 If blocks use the '{{#if var}}' syntax, where the value of 'var' is considered
 'false' if its 'null' or 'false', everything else is 'true':
@@ -116,6 +133,9 @@ Use '#ifnot' to check the inverse of 'var':
     output:
       Not logged in!
 
+Each Blocks
+-----------
+
 Each blocks use the '{{#each v in var}}' syntax, where the value of 'v' is
 replaced with each element in 'var':
 
@@ -132,9 +152,27 @@ replaced with each element in 'var':
       Item #2
       Item #3
 
-Partials use the '{{> var}}' syntax to inject content from another template.
-The partial is rendered at runtime. Partials must be compiled ahead of time and
-passed to 'render()':
+Generators
+----------
+
+Generators use the `{{#gen var}}` syntax, where `var` is a Fantom function that
+dynamically generates content when the template is rendered at runtime:
+
+    template:
+      {{#gen foo}}
+
+    map:
+      ["foo": |OutStream out| { out.print("generated") }]
+
+    output:
+      generated
+
+Partials
+--------
+
+Partials use the '{{#partial var}}' syntax to inject content from another
+template. The partial is rendered at runtime. Partials must be compiled ahead
+of time and passed to 'render()':
 
     Fantom:
       p := ["welcome": Fanbars.compile(welcome)]
@@ -144,7 +182,7 @@ passed to 'render()':
       Welcome, {{user}}!
 
     template:
-      {{> welcome}}
+      {{#partial welcome}}
       Enjoy your stay.
 
     map:
@@ -153,6 +191,9 @@ passed to 'render()':
     output:
       Welcome, Andy!
       Enjoy your stay
+
+Comments
+--------
 
 Comments use the '{{!-- text --}}' sytnax.  Comments are omitted from the
 rendered output:

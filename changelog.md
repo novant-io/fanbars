@@ -1,6 +1,7 @@
 # Changelog
 
 ## Version 0.10 (working)
+* Update `pod.fandoc` for `{{#gen}}` and `{{#partial}}` updates
 
 ## Version 0.9 (26-Jan-2022)
 * Add support for `#gen` generator funcs
