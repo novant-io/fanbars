@@ -1,6 +1,7 @@
 # Changelog
 
 ## Version 0.9 (working)
+* Add support for `#gen` generator funcs
 * Add support for new `{{#partial}}` syntax (deprecate `{{> }}` syntax)
 * Update copyright to Novant LLC
 

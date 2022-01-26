@@ -123,6 +123,23 @@ internal class RawTextDef : Def
 }
 
 *************************************************************************
+** GenDef
+*************************************************************************
+
+internal class GenDef : Def
+{
+  new make(|This| f) { f(this) }
+
+  VarDef func
+
+  override Void dump(OutStream out, Int indent)
+  {
+    out.print(Str.spaces(indent))
+    out.printLine("{{#gen $func.dumpPath")
+  }
+}
+
+*************************************************************************
 ** PartialDef
 *************************************************************************
 

@@ -285,6 +285,17 @@ class ParserTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Gen
+//////////////////////////////////////////////////////////////////////////
+
+  Void testGen()
+  {
+    d := p("{{#gen func}}")
+    verifyEq(d.children.size, 1)
+    verifyGen(d.children[0], "func")
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Partials
 //////////////////////////////////////////////////////////////////////////
 
@@ -344,6 +355,12 @@ class ParserTest : Test
     verifyEq(d.typeof, EachDef#)
     verifyVar(d->iter, [iter])
     verifyVar(d->var, path)
+  }
+
+  private Void verifyGen(Def d, Str ref)
+  {
+    verifyEq(d.typeof, GenDef#)
+    verifyVar(d->func, [ref])
   }
 
   private Void verifyPartial(Def d, Str ref)

@@ -47,6 +47,11 @@ internal const class Renderer
         else
           out.print(v==null ? "" : v.toStr)
 
+      case GenDef#:
+        f := resolveVar(def->func, map) as Func
+        if (f == null) return
+        f(out)
+
       case PartialDef#:
         partial := resolvePartial(def, partials)
         partial?.render(out, map, partials)

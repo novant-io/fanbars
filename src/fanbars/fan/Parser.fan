@@ -137,6 +137,11 @@ internal class Parser
                   parent.children.push(def)
                   stack.push(def)
 
+                case "#gen":
+                  func := parseVarDef
+                  def  := GenDef { it.func=func }
+                  parent.children.push(def)
+
                 case "#partial":
                   var := parseVarDef(null, 1)
                   def := PartialDef { it.var=var }

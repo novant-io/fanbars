@@ -201,6 +201,29 @@ class RendererTest : Test
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Gen
+//////////////////////////////////////////////////////////////////////////
+
+  Void testGen()
+  {
+    m := ["f1": |OutStream out| { out.print("from generator") }]
+    s := "{{#gen f1}}"
+    t := r(s,m)
+    verifyEq(t, "from generator")
+
+    // test closure
+    x  := 12
+    y  := "foo"
+    f2 := |OutStream out| {
+      out.print("from generator, where x is ${x} and y is ${y}")
+    }
+    m = ["f2":f2]
+    s = "{{#gen f2}}"
+    t = r(s,m)
+    verifyEq(t, "from generator, where x is 12 and y is foo")
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Partials
 //////////////////////////////////////////////////////////////////////////
 

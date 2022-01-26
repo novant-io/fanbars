@@ -63,6 +63,7 @@ f.render(out, map)     // stream to out
   * [Variables](#variables)
   * [If Blocks](#if-blocks)
   * [Each Blocks](#each-iterator-blocks)
+  * [Generators](#generators)
   * [Partials](#partials)
   * [Comments](#comments)
 
@@ -149,6 +150,20 @@ replaced with each element in `var`:
       Item #1
       Item #2
       Item #3
+
+### Generators
+
+Generators use the `{{#gen var}}` syntax, where `var` is a Fantom function that
+dynamically generates content when the template is rendered at runtime:
+
+    template:
+      {{#gen foo}}
+
+    map:
+      ["foo": |OutStream out| { out.print("generated") }]
+
+    output:
+      generated
 
 ### Partials
 
