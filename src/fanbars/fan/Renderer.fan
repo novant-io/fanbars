@@ -85,6 +85,17 @@
         Map m := val
         if (m.containsKey(n)) { val=m[n]; return }
       }
+      // TODO FIXIT: I think trap() should have always been the
+      // the default behavoir here; but this is a breaking change
+      // so in the interim use a backdoor hook to trigger; and
+      // come back and fix after we stick some deprecated warnings
+      // in for downstream code
+      if (val.typeof.slot("_fanbarsUseTrap", false) != null)
+      {
+        try { val = val.trap(n) }
+        catch { val = null }
+        return
+      }
       s := val.typeof.slot(n, false)
       if (s == null) { val=null; return }
       if (s is Method) val = ((Method)s).call(val)
