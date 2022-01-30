@@ -10,7 +10,7 @@
 ** Renderer
 *************************************************************************
 
-internal const class Renderer
+@Js internal const class Renderer
 {
   ** Render def to 'OutStream'.
   static Void render(Def def, Str:Obj map, Str:Obj partials, OutStream out)

@@ -6,7 +6,7 @@
 //   1 Aug 2020  Andy Frank  Creation
 //
 
-class RendererTest : Test
+@Js class RendererTest : Test
 {
 
 //////////////////////////////////////////////////////////////////////////
@@ -319,6 +319,8 @@ class RendererTest : Test
 
   Void testFile()
   {
+    if (Env.cur.runtime == "js") return
+
     file := tempDir + `test.fb`
     file.out.print("Hello, {{name}}!").sync.close
 

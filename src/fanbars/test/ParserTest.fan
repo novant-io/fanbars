@@ -6,7 +6,7 @@
 //   30 July 2020  Andy Frank  Creation
 //
 
-class ParserTest : Test
+@Js class ParserTest : Test
 {
 
 //////////////////////////////////////////////////////////////////////////

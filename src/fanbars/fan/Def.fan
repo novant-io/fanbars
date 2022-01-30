@@ -10,7 +10,7 @@
 ** Def
 *************************************************************************
 
-internal class Def
+@Js internal class Def
 {
   ** Child nodes for this AST node.
   Def[] children := [,]
@@ -31,7 +31,7 @@ internal class Def
 ** IfDef
 *************************************************************************
 
-internal class IfDef : Def
+@Js internal class IfDef : Def
 {
   new make(|This| f) { f(this) }
 
@@ -50,7 +50,7 @@ internal class IfDef : Def
 ** IfNotDef
 *************************************************************************
 
-internal class IfNotDef : Def
+@Js internal class IfNotDef : Def
 {
   new make(|This| f) { f(this) }
 
@@ -69,7 +69,7 @@ internal class IfNotDef : Def
 ** EachDef
 *************************************************************************
 
-internal class EachDef : Def
+@Js internal class EachDef : Def
 {
   new make(|This| f) { f(this) }
 
@@ -89,7 +89,7 @@ internal class EachDef : Def
 ** VarDef
 *************************************************************************
 
-internal class VarDef : Def
+@Js internal class VarDef : Def
 {
   new make(|This| f) { f(this) }
 
@@ -109,7 +109,7 @@ internal class VarDef : Def
 ** RawTextDef
 *************************************************************************
 
-internal class RawTextDef : Def
+@Js internal class RawTextDef : Def
 {
   new make(|This| f) { f(this) }
 
@@ -126,7 +126,7 @@ internal class RawTextDef : Def
 ** GenDef
 *************************************************************************
 
-internal class GenDef : Def
+@Js internal class GenDef : Def
 {
   new make(|This| f) { f(this) }
 
@@ -143,7 +143,7 @@ internal class GenDef : Def
 ** PartialDef
 *************************************************************************
 
-internal class PartialDef : Def
+@Js internal class PartialDef : Def
 {
   new make(|This| f) { f(this) }
 

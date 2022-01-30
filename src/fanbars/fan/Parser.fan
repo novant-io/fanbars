@@ -10,7 +10,7 @@
 ** TokenType
 *************************************************************************
 
-internal enum class TokenType
+@Js internal enum class TokenType
 {
   openStash,
   closeStash,
@@ -30,7 +30,7 @@ internal enum class TokenType
 ** Token
 *************************************************************************
 
-internal const class Token
+@Js internal const class Token
 {
   ** Ctor.
   new make(TokenType t, Str v) { this.type=t; this.val=v }
@@ -60,7 +60,7 @@ internal const class Token
 ** Parser
 *************************************************************************
 
-internal class Parser
+@Js internal class Parser
 {
 
 //////////////////////////////////////////////////////////////////////////
@@ -84,8 +84,12 @@ internal class Parser
     stack.add(root)
     Token? token
 
-    while ((token = nextToken).isEos == false)
+    while (true)
     {
+      // read next token or break if eos
+      token = nextToken
+      if (token.isEos) break
+
       parent := stack.last
       switch (token.type)
       {

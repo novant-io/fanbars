@@ -12,7 +12,7 @@ using concurrent
 ** Fanbars
 *************************************************************************
 
-const class Fanbars
+@Js const class Fanbars
 {
   ** Compile the template into a 'Fanbars' instance, where
   ** 'template' can be an 'InStream', 'Str', or 'File'.
