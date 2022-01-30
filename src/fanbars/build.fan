@@ -8,7 +8,7 @@ class Build : build::BuildPod
   {
     podName = "fanbars"
     summary = "Semi-logic-less templates"
-    version = Version("0.10")
+    version = Version("0.11")
     meta = [
       "org.name":     "Novant",
       "org.uri":      "https://novant.io/",

@@ -1,6 +1,8 @@
 # Changelog
 
-## Version 0.10 (working)
+## Version 0.11 (working)
+
+## Version 0.10 (30-Jan-2022)
 * Add support for `@Js`
 * Update `pod.fandoc` for `{{#gen}}` and `{{#partial}}` updates
 
