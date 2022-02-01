@@ -141,23 +141,12 @@
     s = "{{#if foo is '123'}}Hi {{name}}!{{/if}}"
     m = r(s, ["foo":123, "name":"Bob"])
     verifyEq(m, "Hi Bob!")
-  }
 
-  Void testIfNotIs()
-  {
-    s := "{{#ifnot foo is 'xyz'}}hello{{/ifnot}}"
-    m := r(s, ["foo":"xyz"])
+    s = "{{#if foo isnot 'xyz'}}hello{{/if}}"
+    m = r(s, ["foo":"xyz"])
     verifyEq(m, "")
-
     m = r(s, ["foo":"abc"])
     verifyEq(m, "hello")
-
-    m = r(s, ["foo":null])
-    verifyEq(m, "hello")
-
-    s = "{{#ifnot foo is 'xyz'}}Hi {{name}}!{{/ifnot}}"
-    m = r(s, ["foo":123, "name":"Bob"])
-    verifyEq(m, "Hi Bob!")
   }
 
 //////////////////////////////////////////////////////////////////////////

@@ -55,13 +55,14 @@
   new make(|This| f) { f(this) }
 
   VarDef var
+  const Str? op
   LiteralDef? rhs
 
   override Void dump(OutStream out, Int indent)
   {
     out.print(Str.spaces(indent))
     out.print("#if '${var.dumpPath}'")
-    if (rhs != null) out.print(" is ${rhs.dumpVal}")
+    if (rhs != null) out.print(" ${op} ${rhs.dumpVal}")
     out.printLine("")
     children.each |k| { k.dump(out, indent+2) }
     out.print(Str.spaces(indent)).printLine("/if")
@@ -77,14 +78,11 @@
   new make(|This| f) { f(this) }
 
   VarDef var
-  LiteralDef? rhs
 
   override Void dump(OutStream out, Int indent)
   {
     out.print(Str.spaces(indent))
-    out.print("#ifnot '${var.dumpPath}'")
-    if (rhs != null) out.print(" is ${rhs.dumpVal}")
-    out.printLine("")
+    out.printLine("#ifnot '${var.dumpPath}'")
     children.each |k| { k.dump(out, indent+2) }
     out.print(Str.spaces(indent)).printLine("/ifnot")
   }

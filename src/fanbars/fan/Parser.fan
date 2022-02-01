@@ -124,29 +124,23 @@
               {
                 case "#if":
                   var := parseVarDef
-                  tok := nextToken
+                  tmp := nextToken
+                  Str? op
                   LiteralDef? rhs
-                  if (tok.val != "is") unreadToken(tok)
+                  if (tmp.val != "is" && tmp.val != "isnot") unreadToken(tmp)
                   else
                   {
-                    tok = nextToken(TokenType.literal)
-                    rhs = LiteralDef { it.val=tok.val }
+                    op  = tmp.val
+                    tmp = nextToken(TokenType.literal)
+                    rhs = LiteralDef { it.val=tmp.val }
                   }
-                  def := IfDef { it.var=var; it.rhs=rhs }
+                  def := IfDef { it.var=var; it.op=op; it.rhs=rhs }
                   parent.children.push(def)
                   stack.push(def)
 
                 case "#ifnot":
                   var := parseVarDef
-                  tok := nextToken
-                  LiteralDef? rhs
-                  if (tok.val != "is") unreadToken(tok)
-                  else
-                  {
-                    tok = nextToken(TokenType.literal)
-                    rhs = LiteralDef { it.val=tok.val }
-                  }
-                  def := IfNotDef { it.var=var; it.rhs=rhs }
+                  def := IfNotDef { it.var=var }
                   parent.children.push(def)
                   stack.push(def)
 
