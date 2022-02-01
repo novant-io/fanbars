@@ -19,12 +19,12 @@
     {
       case IfDef#:
         v := resolveVar(def->var, map)
-        if (isTruthy(v))
+        if (eval(v, def->rhs))
           def.children.each |kid| { render(kid, map, partials, out) }
 
       case IfNotDef#:
         v := resolveVar(def->var, map)
-        if (!isTruthy(v))
+        if (!eval(v, def->rhs))
           def.children.each |kid| { render(kid, map, partials, out) }
 
       case EachDef#:
@@ -62,6 +62,13 @@
       default:
         def.children.each |kid| { render(kid, map, partials, out) }
     }
+  }
+
+  ** Evalue value to 'true' if 'val' equals 'rhs', or if 'rhs'
+  ** is null, then 'isTruthy(val)'.
+  static Bool eval(Obj? val, LiteralDef? rhs := null)
+  {
+    rhs == null ? isTruthy(val) : val?.toStr == rhs.val
   }
 
   ** Return if we should treat given value as 'true'.
