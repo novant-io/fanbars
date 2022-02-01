@@ -133,6 +133,20 @@ Use `#ifnot` to check the inverse of `var`:
     output:
       Not logged in!
 
+The `{{#if}}` block supports an optional `is` or `isnot` argument that can be
+used to perform a string comparison during evaluation:
+
+    template:
+      {{#if alpha is "active"}}Alpha is active!{{/if}}
+      {{#if beta isnot "active"}}Sorry, Beta is not currently active.{{/ifnot}}
+
+    map:
+      ["alpha":"active", "beta":"inactive"]
+
+    output:
+      Alpha is active!
+      Sorry, Beta is not currently active.
+
 ### Each Iterator Blocks
 
 Each blocks use the `{{#each v in var}}` syntax, where the value of `v` is

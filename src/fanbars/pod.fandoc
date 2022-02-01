@@ -133,6 +133,20 @@ Use '#ifnot' to check the inverse of 'var':
     output:
       Not logged in!
 
+The '{{#if}}' block supports an optional 'is' or 'isnot' argument that can be
+used to perform a string comparison during evaluation:
+
+    template:
+      {{#if alpha is "active"}}Alpha is active!{{/if}}
+      {{#if beta isnot "active"}}Sorry, Beta is not currently active.{{/ifnot}}
+
+    map:
+      ["alpha":"active", "beta":"inactive"]
+
+    output:
+      Alpha is active!
+      Sorry, Beta is not currently active.
+
 Each Blocks
 -----------
 
@@ -155,7 +169,7 @@ replaced with each element in 'var':
 Generators
 ----------
 
-Generators use the `{{#gen var}}` syntax, where `var` is a Fantom function that
+Generators use the '{{#gen var}}' syntax, where 'var' is a Fantom function that
 dynamically generates content when the template is rendered at runtime:
 
     template:

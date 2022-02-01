@@ -2,6 +2,7 @@
 
 ## Version 0.11 (working)
 * Add support for `Obj.trap` in `Renderer.resolveVar`
+* Add support for `{{#if is/isnot}}` clause
 
 ## Version 0.10 (30-Jan-2022)
 * Add support for `@Js`
