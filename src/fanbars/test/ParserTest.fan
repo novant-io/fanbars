@@ -168,7 +168,7 @@
     verifyErr(ParseErr#) { p("{{#if name}} hello") }
   }
 
- Void testIfNotBasic()
+  Void testIfNotBasic()
   {
     d := p("{{#ifnot foo}}hello{{/ifnot}}")
     verifyEq(d.children.size, 1)
@@ -217,6 +217,56 @@
            {{#ifnot bar}}world{{/if}}
            {{/ifnot}}")
     }
+  }
+
+  Void testIfIs()
+  {
+    // single quote
+    d := p("{{#if foo is 'xyz'}}hello{{/if}}")
+    verifyEq(d.children.size, 1)
+    verifyIf(d.children[0], ["foo"], "xyz")
+    verifyRaw(d.children[0].children[0], "hello")
+
+    // double quote
+    d = p("{{#if foo is \"xyz\"}}hello{{/if}}")
+    verifyEq(d.children.size, 1)
+    verifyIf(d.children[0], ["foo"], "xyz")
+    verifyRaw(d.children[0].children[0], "hello")
+
+    d = p("{{ #if foo  is  'a b c '  }}hello{{ /if }}")
+    verifyEq(d.children.size, 1)
+    verifyIf(d.children[0], ["foo"], "a b c ")
+    verifyRaw(d.children[0].children[0], "hello")
+
+    verifyErr(ParseErr#) { p("{{#if name is}} hello {{/if}}") }
+    verifyErr(ParseErr#) { p("{{#if name is xyz}} hello {{/if}}") }
+    verifyErr(ParseErr#) { p("{{#if name is 'xyz}} hello {{/if}}") }
+    verifyErr(ParseErr#) { p("{{#if name is \"xyz'}} hello {{/if}}") }
+  }
+
+  Void testIfNotIs()
+  {
+    // single quote
+    d := p("{{#ifnot foo is 'xyz'}}hello{{/ifnot}}")
+    verifyEq(d.children.size, 1)
+    verifyIfNot(d.children[0], ["foo"], "xyz")
+    verifyRaw(d.children[0].children[0], "hello")
+
+    // double quote
+    d = p("{{#ifnot foo is \"xyz\"}}hello{{/ifnot}}")
+    verifyEq(d.children.size, 1)
+    verifyIfNot(d.children[0], ["foo"], "xyz")
+    verifyRaw(d.children[0].children[0], "hello")
+
+    d = p("{{ #ifnot foo  is  'a b c '  }}hello{{ /ifnot }}")
+    verifyEq(d.children.size, 1)
+    verifyIfNot(d.children[0], ["foo"], "a b c ")
+    verifyRaw(d.children[0].children[0], "hello")
+
+    verifyErr(ParseErr#) { p("{{#ifnot name is}} hello {{/ifnot}}") }
+    verifyErr(ParseErr#) { p("{{#ifnot name is xyz}} hello {{/ifnot}}") }
+    verifyErr(ParseErr#) { p("{{#ifnot name is 'xyz}} hello {{/ifnot}}") }
+    verifyErr(ParseErr#) { p("{{#ifnot name is \"xyz'}} hello {{/ifnot}}") }
   }
 
 //////////////////////////////////////////////////////////////////////////
@@ -330,6 +380,12 @@
     verifyEq(d->text,  text)
   }
 
+  private Void verifyLiteral(Def d, Str val)
+  {
+    verifyEq(d.typeof, LiteralDef#)
+    verifyEq(d->val, val)
+  }
+
   private Void verifyVar(Def d, Str[] path, Bool escape := true)
   {
     verifyEq(d.typeof, VarDef#)
@@ -339,17 +395,22 @@
     p.size.times |i| { verifyEq(p[i], path[i]) }
   }
 
-  private Void verifyIf(Def d, Str[] path)
+  private Void verifyIf(Def d, Str[] path, Str? rhs := null)
   {
     verifyEq(d.typeof, IfDef#)
     verifyVar(d->var, path)
+    if (rhs == null) verifyNull(d->rhs)
+    else verifyLiteral(d->rhs, rhs)
   }
 
-  private Void verifyIfNot(Def d, Str[] path)
+  private Void verifyIfNot(Def d, Str[] path, Str? rhs := null)
   {
     verifyEq(d.typeof, IfNotDef#)
     verifyVar(d->var, path)
+    if (rhs == null) verifyNull(d->rhs)
+    else verifyLiteral(d->rhs, rhs)
   }
+
   private Void verifyEach(Def d, Str iter, Str[] path)
   {
     verifyEq(d.typeof, EachDef#)

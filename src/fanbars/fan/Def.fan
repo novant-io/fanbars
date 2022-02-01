@@ -28,6 +28,25 @@
 }
 
 *************************************************************************
+** LiteralDef
+*************************************************************************
+
+@Js internal class LiteralDef : Def
+{
+  new make(|This| f) { f(this) }
+
+  const Str val
+
+  Str dumpVal() { "'${val}'" }
+
+  override Void dump(OutStream out, Int indent)
+  {
+    out.print(Str.spaces(indent))
+    out.printLine(dumpVal)
+  }
+}
+
+*************************************************************************
 ** IfDef
 *************************************************************************
 
@@ -36,11 +55,14 @@
   new make(|This| f) { f(this) }
 
   VarDef var
+  LiteralDef? rhs
 
   override Void dump(OutStream out, Int indent)
   {
     out.print(Str.spaces(indent))
-    out.printLine("#if '${var.dumpPath}'")
+    out.print("#if '${var.dumpPath}'")
+    if (rhs != null) out.print(" is ${rhs.dumpVal}")
+    out.printLine("")
     children.each |k| { k.dump(out, indent+2) }
     out.print(Str.spaces(indent)).printLine("/if")
   }
@@ -55,11 +77,14 @@
   new make(|This| f) { f(this) }
 
   VarDef var
+  LiteralDef? rhs
 
   override Void dump(OutStream out, Int indent)
   {
     out.print(Str.spaces(indent))
-    out.printLine("#ifnot '${var.dumpPath}'")
+    out.print("#ifnot '${var.dumpPath}'")
+    if (rhs != null) out.print(" is ${rhs.dumpVal}")
+    out.printLine("")
     children.each |k| { k.dump(out, indent+2) }
     out.print(Str.spaces(indent)).printLine("/ifnot")
   }

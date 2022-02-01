@@ -19,6 +19,7 @@
   comment,
   keyword,
   identifier,
+  literal,
   // TODO: this goes away
   partial,
   dot,
@@ -48,6 +49,7 @@
   Bool isComment()       { type == TokenType.comment       }
   Bool isKeyword()       { type == TokenType.keyword       }
   Bool isIdentifier()    { type == TokenType.identifier    }
+  Bool isLiteral()       { type == TokenType.literal       }
   Bool isPartial()       { type == TokenType.partial       }
   Bool isDot()           { type == TokenType.dot           }
   Bool isRaw()           { type == TokenType.raw           }
@@ -122,13 +124,29 @@
               {
                 case "#if":
                   var := parseVarDef
-                  def := IfDef { it.var=var }
+                  tok := nextToken
+                  LiteralDef? rhs
+                  if (tok.val != "is") unreadToken(tok)
+                  else
+                  {
+                    tok = nextToken(TokenType.literal)
+                    rhs = LiteralDef { it.val=tok.val }
+                  }
+                  def := IfDef { it.var=var; it.rhs=rhs }
                   parent.children.push(def)
                   stack.push(def)
 
                 case "#ifnot":
                   var := parseVarDef
-                  def := IfNotDef { it.var=var }
+                  tok := nextToken
+                  LiteralDef? rhs
+                  if (tok.val != "is") unreadToken(tok)
+                  else
+                  {
+                    tok = nextToken(TokenType.literal)
+                    rhs = LiteralDef { it.val=tok.val }
+                  }
+                  def := IfNotDef { it.var=var; it.rhs=rhs }
                   parent.children.push(def)
                   stack.push(def)
 
@@ -219,9 +237,18 @@
     return token
   }
 
+  ** Unread given token.
+  private Void unreadToken(Token token)
+  {
+    pushback.push(token)
+  }
+
   ** Read next token from stream or 'null' if EOS.
   private Token? readNextToken()
   {
+    // first check pushback
+    if (pushback.size > 0) return pushback.pop
+
     buf.clear
 
     // read next char
@@ -328,6 +355,20 @@
         return Token(TokenType.keyword, buf.toStr)
       }
 
+      // literal
+      if (ch == '\'' || ch == '\"')
+      {
+        delim := ch
+        while (peek != delim)
+        {
+          if (peek == null) throw unexpectedChar(null)
+          buf.addChar(read)
+        }
+        read  // eat trailing delim
+        while (peek.isSpace) ch = read // eat trailing space (TODO is this right?)
+        return Token(TokenType.literal, buf.toStr)
+      }
+
       // identifier
       if (!ch.isAlpha) throw unexpectedChar(ch)
       buf.addChar(ch)
@@ -416,4 +457,5 @@
   private Int commentDepth := 0     // track comment {{!-- depth
   private Bool tokInStash := false  // are we tokenizing inside {{ ... }}
   private StrBuf buf := StrBuf()    // resuse buf in nextToken
+  private Token[] pushback := [,]   // for unreadToken
 }
