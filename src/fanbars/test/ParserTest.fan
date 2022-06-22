@@ -333,13 +333,7 @@
 
   Void testPartials()
   {
-    // old syntax
-    d := p("{{> header}}")
-    verifyEq(d.children.size, 1)
-    verifyPartial(d.children[0], "header")
-
-    // new syntax
-    d = p("{{#partial header}}")
+    d := p("{{#partial header}}")
     verifyEq(d.children.size, 1)
     verifyPartial(d.children[0], "header")
   }
