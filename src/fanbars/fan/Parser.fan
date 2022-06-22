@@ -347,10 +347,11 @@
       }
 
       // identifier
-      if (!ch.isAlpha) throw unexpectedChar(ch)
+      if (!ch.isAlpha && ch != '_') throw unexpectedChar(ch)
       buf.addChar(ch)
       while (isValidIdentiferChar(peek)) buf.addChar(read)
       while (peek.isSpace) ch = read // eat trailing space
+      if (buf[0] == '_' && buf.size == 1) throw parseErr("Illegal identifier '${buf}'")
       return Token(TokenType.identifier, buf.toStr)
     }
 

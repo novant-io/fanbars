@@ -77,10 +77,17 @@
     verifyEq(d.children.size, 1)
     verifyVar(d.children.first, ["foo"])
 
+    d = p("{{_foo}}")
+    verifyEq(d.children.size, 1)
+    verifyVar(d.children.first, ["_foo"])
+
+    d = p("{{_foo_bar}}")
+    verifyEq(d.children.size, 1)
+    verifyVar(d.children.first, ["_foo_bar"])
+
     verifyErr(ParseErr#) { p("{{123}}") }
     verifyErr(ParseErr#) { p("{{_}}") }
     verifyErr(ParseErr#) { p("{{-}}") }
-    verifyErr(ParseErr#) { p("{{_foo}}") }
     verifyErr(ParseErr#) { p("{{-foo}}") }
   }
 
