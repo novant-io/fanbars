@@ -4,6 +4,7 @@
 * Remove support for deprecated `{{> }}` partial syntax
 * Replace `Renderer.resolveVar` behavior with `Obj.trap`
 * Update `Parser` to allow variables to begin with `_`
+* Update `Fanbars.render` to take `Obj?` for partial resolver
 
 ## Version 0.11 (1-Feb-2022)
 * Add support for `Obj.trap` in `Renderer.resolveVar`

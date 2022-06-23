@@ -34,7 +34,7 @@ using concurrent
   }
 
   ** Render template to a 'Str' instance.
-  Str renderStr(Str:Obj map, Str:Obj partials := [:])
+  Str renderStr(Str:Obj map, Obj? partials := null)
   {
     buf := StrBuf()
     render(buf.out, map, partials)
@@ -42,7 +42,7 @@ using concurrent
   }
 
   ** Render template to given OutStream.
-  Void render(OutStream out, Str:Obj map, Str:Obj partials := [:])
+  Void render(OutStream out, Str:Obj map, Obj? partials := null)
   {
     def := (defRef.val as Unsafe).val
     Renderer.render(def, map, partials, out)

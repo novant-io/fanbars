@@ -13,7 +13,7 @@
 @Js internal const class Renderer
 {
   ** Render def to 'OutStream'.
-  static Void render(Def def, Str:Obj map, Str:Obj partials, OutStream out)
+  static Void render(Def def, Str:Obj map, Obj? partials, OutStream out)
   {
     switch (def.typeof)
     {
@@ -104,8 +104,13 @@
     return val
   }
 
-  static Fanbars? resolvePartial(PartialDef def, Str:Obj partials)
+  static Fanbars? resolvePartial(PartialDef def, Obj? partials)
   {
-    partials[def.var.path[0]] as Fanbars
+    if (partials == null) return null
+
+    name := def.var.path[0]
+    if (partials is Map)  return ((Map)partials)[name] as Fanbars
+    if (partials is Func) return ((Func)partials)(name) as Fanbars
+    throw ArgErr("Invalid partials argument: ${partials}")
   }
 }
