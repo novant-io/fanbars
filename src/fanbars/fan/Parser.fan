@@ -19,6 +19,7 @@
   comment,
   keyword,
   identifier,
+  qname,
   literal,
   dot,
   raw,
@@ -47,6 +48,7 @@
   Bool isComment()       { type == TokenType.comment       }
   Bool isKeyword()       { type == TokenType.keyword       }
   Bool isIdentifier()    { type == TokenType.identifier    }
+  Bool isQname()         { type == TokenType.qname         }
   Bool isLiteral()       { type == TokenType.literal       }
   Bool isDot()           { type == TokenType.dot           }
   Bool isRaw()           { type == TokenType.raw           }
@@ -151,6 +153,26 @@
                 case "#partial":
                   var := parseVarDef(null, 1)
                   def := PartialDef { it.var=var }
+                  parent.children.push(def)
+
+                case "#helper":
+                  method := nextToken(TokenType.qname).val
+                  params := Def[,]
+                  while (true)
+                  {
+                    if (peek == null) throw unexpectedChar(null)
+                    if (peek == '}') break
+                    if (peek == '\"')
+                    {
+                      tmp := nextToken(TokenType.literal)
+                      params.add(LiteralDef { it.val=tmp.val })
+                    }
+                    else
+                    {
+                      params.add(parseVarDef)
+                    }
+                  }
+                  def := HelperDef { it.method=method; it.params=params }
                   parent.children.push(def)
 
                 case "/if":
@@ -346,13 +368,30 @@
         return Token(TokenType.literal, buf.toStr)
       }
 
-      // identifier
+      // identifier | qname
       if (!ch.isAlpha && ch != '_') throw unexpectedChar(ch)
       buf.addChar(ch)
       while (isValidIdentiferChar(peek)) buf.addChar(read)
-      while (peek.isSpace) ch = read // eat trailing space
-      if (buf[0] == '_' && buf.size == 1) throw parseErr("Illegal identifier '${buf}'")
-      return Token(TokenType.identifier, buf.toStr)
+      if (peek == ':')
+      {
+        // qname (buf contains pod_name)
+        buf.addChar(read)
+        if (peek != ':') throw unexpectedChar(ch)
+        buf.addChar(read)
+        while (isValidIdentiferChar(peek)) buf.addChar(read)  // type name
+        if (peek != '.') throw unexpectedChar(ch)
+        buf.addChar(read)
+        while (isValidIdentiferChar(peek)) buf.addChar(read)  // method name
+        while (peek.isSpace) ch = read // eat trailing space
+        return Token(TokenType.qname, buf.toStr)
+      }
+      else
+      {
+        // identifier
+        while (peek.isSpace) ch = read // eat trailing space
+        if (buf[0] == '_' && buf.size == 1) throw parseErr("Illegal identifier '${buf}'")
+        return Token(TokenType.identifier, buf.toStr)
+      }
     }
 
     // raw text
@@ -411,7 +450,7 @@
   {
     token.isEos
       ? parseErr("Unexpected end of stream")
-      : parseErr("Unexpected token: '$token.val'")
+      : parseErr("Unexpected token: '$token.val' [$token.type]")
   }
 
   ** Throw ParseErr

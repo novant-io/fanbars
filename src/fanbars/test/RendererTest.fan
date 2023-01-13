@@ -267,6 +267,45 @@
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Helpers
+//////////////////////////////////////////////////////////////////////////
+
+  Void testHelpers()
+  {
+    s := "{{#helper fanbars::RendererTest.helper1 foo}}"
+    m := r(s, ["foo":"Bob"])
+    verifyEq(m, "Hey there Bob!")
+
+    s = "{{#helper fanbars::RendererTest.helper1 foo.bar}}"
+    m = r(s, ["foo":["bar":"Billy"]])
+    verifyEq(m, "Hey there Billy!")
+
+    s = "{{#helper fanbars::RendererTest.helper2 a b c}}"
+    m = r(s, ["a":5, "b":7, "c":12])
+    verifyEq(m, "The magic formula is 5 + 7 = 12")
+
+    s = "{{#helper fanbars::RendererTest.helper2 a \"3\" \"8\"}}"
+    m = r(s, ["a":5])
+    verifyEq(m, "The magic formula is 5 + 3 = 8")
+
+    // type not found
+    verifyErr(UnknownSlotErr#) {
+      es := "{{#helper fanbars::RendererTest.xxx foo}}"
+      em := r(es, ["foo":"Bob"])
+    }
+  }
+
+  static Str helper1(Obj? val)
+  {
+    return "Hey there ${val}!"
+  }
+
+  static Str helper2(Obj? a, Obj? b, Obj? c)
+  {
+    return "The magic formula is ${a} + ${b} = ${c}"
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Comments
 //////////////////////////////////////////////////////////////////////////
 

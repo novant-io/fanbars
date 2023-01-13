@@ -158,7 +158,7 @@
   override Void dump(OutStream out, Int indent)
   {
     out.print(Str.spaces(indent))
-    out.printLine("{{#gen $func.dumpPath")
+    out.printLine("#gen $func.dumpPath")
   }
 }
 
@@ -175,6 +175,26 @@
   override Void dump(OutStream out, Int indent)
   {
     out.print(Str.spaces(indent))
-    out.printLine("{{#partial $var.dumpPath")
+    out.printLine("#partial $var.dumpPath")
+  }
+}
+
+*************************************************************************
+** HelperDef
+*************************************************************************
+
+@Js internal class HelperDef : Def
+{
+  new make(|This| f) { f(this) }
+
+  const Str method
+  Def[] params
+
+  override Void dump(OutStream out, Int indent)
+  {
+    out.print(Str.spaces(indent))
+    out.print("#helper $method")
+    params.each |p| { out.print(" ").print(p is VarDef ? p->dumpPath : p->dumpVal) }
+    out.printLine("")
   }
 }

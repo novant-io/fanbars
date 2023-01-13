@@ -346,6 +346,36 @@
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Helpers
+//////////////////////////////////////////////////////////////////////////
+
+  Void testHelpers()
+  {
+    d := p("{{#helper acme::Bar.something foo}}")
+    verifyEq(d.children.size, 1)
+    verifyHelper(d.children[0], "acme::Bar.something", ["foo"])
+
+    d = p("{{#helper acme::Bar.something foo bar car}}")
+    verifyEq(d.children.size, 1)
+    verifyHelper(d.children[0], "acme::Bar.something", ["foo", "bar", "car"])
+
+    // literal
+    d = p("{{#helper acme::Bar.something \"foo\"}}")
+    verifyEq(d.children.size, 1)
+    verifyHelper(d.children[0], "acme::Bar.something", ["foo"])
+
+    // literals
+    d = p("{{#helper acme::Bar.something \"foo\" \"123\"}}")
+    verifyEq(d.children.size, 1)
+    verifyHelper(d.children[0], "acme::Bar.something", ["foo", "123"])
+
+    // mixed
+    d = p("{{#helper acme::Bar.something foo \"bar\"}}")
+    verifyEq(d.children.size, 1)
+    verifyHelper(d.children[0], "acme::Bar.something", ["foo", "bar"])
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Support
 //////////////////////////////////////////////////////////////////////////
 
@@ -413,5 +443,18 @@
   {
     verifyEq(d.typeof, PartialDef#)
     verifyVar(d->var, [ref])
+  }
+
+  private Void verifyHelper(Def d, Str qname, Str[] args)
+  {
+    verifyEq(d.typeof, HelperDef#)
+    verifyEq(d->method, qname)
+    args.each |arg,i|
+    {
+      Def p := d->params->get(i)
+      if (p is LiteralDef) return verifyLiteral(p, arg)
+      if (p is VarDef)     return verifyVar(p, [arg])
+      throw Err()
+    }
   }
 }

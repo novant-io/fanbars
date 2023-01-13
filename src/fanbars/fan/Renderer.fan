@@ -56,6 +56,16 @@
         partial := resolvePartial(def, partials)
         partial?.render(out, map, partials)
 
+      case HelperDef#:
+        HelperDef h := def
+        Method method := Method.find(h.method)
+        args := h.params.map |v|
+        {
+          if (v is LiteralDef) return v->val
+          return resolveVar(v, map)
+        }
+        out.print(method.callList(args))
+
       case RawTextDef#:
         out.print(def->text)
 
