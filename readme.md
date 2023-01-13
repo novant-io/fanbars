@@ -64,6 +64,7 @@ f.render(out, map)     // stream to out
   * [If Blocks](#if-blocks)
   * [Each Blocks](#each-iterator-blocks)
   * [Generators](#generators)
+  * [Helpers](#helpers)
   * [Partials](#partials)
   * [Comments](#comments)
 
@@ -178,6 +179,29 @@ dynamically generates content when the template is rendered at runtime:
 
     output:
       generated
+
+### Helpers
+
+Helpers invoke a Fantom method to produce content based on one or more vars:
+
+    template:
+      {{#helper acme::Bar.helper foo}}
+
+    map:
+      ["foo":"Bob"]
+
+    acme::Bar.helper:
+      Str helper(Obj? val) { "Hello there ${val}!" }
+
+    output:
+      Hello there Bob!
+
+Helper funcs may take multiple arguments, where each arg may be a `var` def
+or a string literal:
+
+    template:
+      {{#helper acme::Bar.helper foo bar "some string"}}
+
 
 ### Partials
 
