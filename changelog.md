@@ -1,6 +1,8 @@
 # Changelog
 
-## Version 0.12 (working)
+## Version 0.13 (working)
+
+## Version 0.12 (27-Mar-2022)
 * Remove support for deprecated `{{> }}` partial syntax
 * Replace `Renderer.resolveVar` behavior with `Obj.trap`
 * Update `Parser` to allow variables to begin with `_`
