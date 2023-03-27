@@ -150,6 +150,29 @@
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Evlis
+//////////////////////////////////////////////////////////////////////////
+
+  Void testElvis()
+  {
+    // test exploded just for sanity
+    s := "{{#if foo}}{{foo}}{{/if}}{{#ifnot foo}}xyz{{/ifnot}}"
+    m := r(s, ["foo":"bar"])
+    verifyEq(m, "bar")
+    m = r(s, ["foo":null])
+    verifyEq(m, "xyz")
+    m = r(s, [:])
+    verifyEq(m, "xyz")
+
+    // now same case with ?: operator
+    s = "{{foo ?: 'xyz'}}"
+    m = r(s, ["foo":"bar"])
+    verifyEq(m, "bar")
+    m = r(s, ["foo":null])
+    verifyEq(m, "xyz")
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Each
 //////////////////////////////////////////////////////////////////////////
 

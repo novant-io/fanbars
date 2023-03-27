@@ -259,6 +259,40 @@
   }
 
 //////////////////////////////////////////////////////////////////////////
+// Evlis
+//////////////////////////////////////////////////////////////////////////
+
+  Void testElivs()
+  {
+    // single quote
+    d := p("{{foo ?: 'xyz'}}")
+    verifyEq(d.children.size, 2)
+    verifyIf(d.children[0], ["foo"])
+    verifyVar(d.children[0].children[0], ["foo"])
+    verifyIfNot(d.children[1], ["foo"])
+    verifyRaw(d.children[1].children[0], "xyz")
+
+    // // double quote
+    d = p("{{foo ?: \"xyz\"}}")
+    verifyEq(d.children.size, 2)
+    verifyIf(d.children[0], ["foo"])
+    verifyVar(d.children[0].children[0], ["foo"])
+    verifyIfNot(d.children[1], ["foo"])
+    verifyRaw(d.children[1].children[0], "xyz")
+
+    // whitespace
+    d = p("{{ foo   ?:  \"xyz\"    }}")
+    verifyEq(d.children.size, 2)
+    verifyIf(d.children[0], ["foo"])
+    verifyVar(d.children[0].children[0], ["foo"])
+    verifyIfNot(d.children[1], ["foo"])
+    verifyRaw(d.children[1].children[0], "xyz")
+
+    verifyErr(ParseErr#) { p("{{foo ?: }}") }
+    verifyErr(ParseErr#) { p("{{foo ? 'bar'}}") }
+  }
+
+//////////////////////////////////////////////////////////////////////////
 // Each
 //////////////////////////////////////////////////////////////////////////
 

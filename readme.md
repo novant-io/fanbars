@@ -62,6 +62,7 @@ f.render(out, map)     // stream to out
 
   * [Variables](#variables)
   * [If Blocks](#if-blocks)
+  * [Elvis Operator](#elvis-operator)
   * [Each Blocks](#each-iterator-blocks)
   * [Generators](#generators)
   * [Helpers](#helpers)
@@ -147,6 +148,22 @@ used to perform a string comparison during evaluation:
     output:
       Alpha is active!
       Sorry, Beta is not currently active.
+
+### Elvis Operator
+
+The elivis operator `?:` can be used to inline an `if-else` statement, where if
+the value is `null` then the supplied literal is placed instead:
+
+    template:
+      Case A: {{foo ?: "(none)"}}
+      Case B: {{bar ?: "(none)"}}
+
+    map:
+      ["foo":125]
+
+    output:
+      Case A: 125
+      Case B: (none)
 
 ### Each Iterator Blocks
 

@@ -18,6 +18,7 @@
   closeTriStash,
   comment,
   keyword,
+  elvis,
   identifier,
   qname,
   literal,
@@ -47,6 +48,7 @@
   Bool isCloseTriStash() { type == TokenType.closeTriStash }
   Bool isComment()       { type == TokenType.comment       }
   Bool isKeyword()       { type == TokenType.keyword       }
+  Bool isElvis()         { type == TokenType.elvis         }
   Bool isIdentifier()    { type == TokenType.identifier    }
   Bool isQname()         { type == TokenType.qname         }
   Bool isLiteral()       { type == TokenType.literal       }
@@ -108,8 +110,30 @@
           switch (token.type)
           {
             case TokenType.identifier:
-              def := parseVarDef(token)
-              parent.children.add(def)
+              var := parseVarDef(token)
+              tmp := nextToken
+              if (tmp.isElvis)
+              {
+                // if we detect ?: parse literal (but convert to RawText)
+                tmp = nextToken(TokenType.literal)
+                fallback := RawTextDef { it.text=tmp.val }
+
+                // implicit {{#if var}} {{var}} {{/if}}
+                ifdef := IfDef { it.var=var }
+                ifdef.children.push(var)
+                parent.children.push(ifdef)
+
+                // implicit {{#ifnot var}} {{fallback}} {{/ifnot}}
+                notdef := IfNotDef { it.var=var }
+                notdef.children.push(fallback)
+                parent.children.push(notdef)
+              }
+              else
+              {
+                // else; unread and add simple var
+                unreadToken(tmp)
+                parent.children.add(var)
+              }
 
             case TokenType.keyword:
               switch (token.val)
@@ -352,6 +376,14 @@
         while (peek?.isAlpha == true) buf.addChar(read)
         if (ch == '/') while (peek.isSpace) ch = read // eat trailing space only for {{/xxx}}
         return Token(TokenType.keyword, buf.toStr)
+      }
+
+      // elivs
+      if (ch == '?' && peek == ':')
+      {
+        read // eat :
+        buf.add("?:")
+        return Token(TokenType.elvis, buf.toStr)
       }
 
       // literal
